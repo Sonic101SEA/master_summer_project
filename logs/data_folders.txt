@@ -1,0 +1,17 @@
+consensus_cnv consists of:
+consensus.20170119.somatic.cna.annotated
+consensus.20170119.somatic.cna.icgc.public
+consensus.20170119.somatic.cna.tcga.public
+consensus.20170217.purity.ploidy.txt
+gene_level_calls
+GISTIC_analysis
+
+
+The first 4 folders/files contains data on each individual sample
+gene_level_calls and GISTIC_analysis consists of samples combined into one file
+
+
+consensus_sv contains the structural variants
+
+
+The data folder also contains the ID mapping for ICGC and TCGA donors, as well as the outcome response of platinum therapy for each donor.
