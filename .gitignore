@@ -1,2 +1,4 @@
 data/
-*.Rproj/
+.DS_Store
+.Rhistory
+.Rproj.user/
