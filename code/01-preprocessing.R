@@ -5,7 +5,7 @@
 cna_annotated <- read.table(here::here("data/consensus_cnv/consensus.20170119.somatic.cna.annotated/0009b464-b376-4fbc-8a56-da538269a02f.consensus.20170119.somatic.cna.annotated.txt"), header = TRUE)
 
 ## For combined data
-consensus_cn_gene <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), fill = TRUE)
+consensus_cn_gene <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), fill = TRUE, header = TRUE)
 
 ## Data mapping
 platinum_response <- read.table(here::here("data/TCGA_OV_PlatinumResponse_PMID27526849.txt"), header = TRUE)
@@ -18,6 +18,10 @@ sv_data <- read.table(here::here("data/consensus_sv/icgc/open/0a6be23a-d5a0-4e95
 ## Overiew Data
 overview_data <- readxl::read_excel(here::here("data/pcawg_overview_data.xlsx"))
 
+## Names of IDs
+ids <- as.character(id_with_response_overview$tumour_specimen_aliquot_id)
+ids_X <- paste("X", ids, sep = "")
+
 
 # Processing Steps --------------------------------------------------------
 ## Merging platinum response and the IDs of ICGC and TCGA 45 donors together
@@ -27,3 +31,8 @@ id_with_response <- merge(platinum_response, id_mapping, by.x = "SampleCode", by
 id_with_response_overview <- merge(id_with_response, overview_data, by = "tumour_specimen_aliquot_id", all.x = TRUE)
 
 ## Processing consensus_cn_gene
+### Keeping all columns seen in ids
+consensus_cn_gene_selected <- consensus_cn_gene[, grepl(paste(ids_X, collapse = "|"),
+                                                        names(consensus_cn_gene),)]
+  # Work in progress
+consensus_cn_gene_selected <- as.data.frame(consensus_cn_gene_selected)
