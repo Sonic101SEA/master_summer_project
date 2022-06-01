@@ -12,12 +12,18 @@ platinum_response <- read.table(here::here("data/TCGA_OV_PlatinumResponse_PMID27
 id_mapping <- read.table(here::here("data/id_mapping_icgc2tcga.45_donors.txt"), header = TRUE)
 
 ## Structural variant data
-## For one individual's structural variant data
+### For one individual's structural variant data
 sv_data <- read.table(here::here("data/consensus_sv/icgc/open/0a6be23a-d5a0-4e95-ada2-a61b2b5d9485.pcawg_consensus_1.6.161116.somatic.sv.bedpe.gz"), header = TRUE)
+
+## Overiew Data
+overview_data <- readxl::read_excel(here::here("data/pcawg_overview_data.xlsx"))
 
 
 # Processing Steps --------------------------------------------------------
 ## Merging platinum response and the IDs of ICGC and TCGA 45 donors together
 id_with_response <- merge(platinum_response, id_mapping, by.x = "SampleCode", by.y = "TCGA_id")
+
+## Merging overview data with id_with_response
+id_with_response_overview <- merge(id_with_response, overview_data, by = "tumour_specimen_aliquot_id", all.x = TRUE)
 
 ## Processing consensus_cn_gene
