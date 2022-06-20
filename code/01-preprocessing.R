@@ -43,3 +43,4 @@ consensus_cn_gene_selected <- as.data.frame(consensus_cn_gene_selected)
 # Output files ------------------------------------------------------------
 
 # write.csv(id_with_response_overview, file = "data/id_and_response_with_pcawg_overview.csv")
+# write.csv(id_with_response, file = "data/id_and_therapy_response.csv")
