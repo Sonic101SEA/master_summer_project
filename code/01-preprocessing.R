@@ -18,9 +18,6 @@ sv_data <- read.table(here::here("data/consensus_sv/icgc/open/0a6be23a-d5a0-4e95
 ## Overiew Data
 overview_data <- readxl::read_excel(here::here("data/pcawg_overview_data.xlsx"))
 
-## Names of IDs
-ids <- as.character(id_with_response_overview$tumour_specimen_aliquot_id)
-ids_X <- paste("X", ids, sep = "")
 
 
 # Processing Steps --------------------------------------------------------
@@ -29,6 +26,10 @@ id_with_response <- merge(platinum_response, id_mapping, by.x = "SampleCode", by
 
 ## Merging overview data with id_with_response
 id_with_response_overview <- merge(id_with_response, overview_data, by = "tumour_specimen_aliquot_id", all.x = TRUE)
+
+## Names of IDs
+ids <- as.character(id_with_response_overview$tumour_specimen_aliquot_id)
+ids_X <- paste("X", ids, sep = "")
 
 ## Processing consensus_cn_gene
 ### Keeping all columns seen in ids
