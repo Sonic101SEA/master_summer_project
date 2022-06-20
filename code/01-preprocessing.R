@@ -8,6 +8,13 @@ cna_annotated <- read.table(here::here("data/consensus_cnv/consensus.20170119.so
 ### Major
 consensus_cn_major_gene <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), fill = TRUE, header = TRUE)
 
+### Level calls
+consensus_cn_level <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_level_calls.by_gene.170214.txt"), fill = TRUE, header = TRUE)
+
+### GISTIC Analysis
+
+all_data_by_genes <- read.table(here::here("data/consensus_cnv/GISTIC_analysis/all_data_by_genes.rmcnv.pt_170207.txt"), fill = TRUE, header = TRUE)
+
 ## Data mapping
 platinum_response <- read.table(here::here("data/TCGA_OV_PlatinumResponse_PMID27526849.txt"), header = TRUE)
 id_mapping <- read.table(here::here("data/id_mapping_icgc2tcga.45_donors.txt"), header = TRUE)
