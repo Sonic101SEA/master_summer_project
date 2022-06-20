@@ -40,7 +40,6 @@ consensus_cn_gene_selected <- consensus_cn_gene[, grepl(paste(ids_X, collapse = 
 consensus_cn_gene_selected <- as.data.frame(consensus_cn_gene_selected)
 
 
-
 # Output files ------------------------------------------------------------
 
 # write.csv(id_with_response_overview, file = "data/id_and_response_with_pcawg_overview.csv")
