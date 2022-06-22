@@ -13,6 +13,18 @@ for (i in 1:length(interest_CNV_files)) {
                       interest_CNV_files[i]), header = TRUE))
 }
 
+## Reading SV files for ids of interest
+
+all_SV_files <- list.files(path = "data/consensus_sv/tcga/open", pattern = "*.gz")
+interest_SV_files <- subset(all_SV_files, grepl(paste0(list_ids, collapse = "|"),
+                                                  all_SV_files))
+
+for (i in 1:length(interest_SV_files)) {
+  assign(interest_SV_files[i],
+         read.table(paste0(here::here("data/consensus_sv/tcga/open/"),
+                           interest_SV_files[i]), header = TRUE))
+}
+
 # Processing --------------------------------------------------------------
 ## Processing consensus_cn_gene
 ### Keeping all columns seen in ids
