@@ -25,8 +25,12 @@ for (i in 1:length(interest_SV_files)) {
                            interest_SV_files[i]), header = TRUE))
 }
 
+## Reading gene level calls in CNV
+cnv_gene_level_calls <- read.table(here::here("data/consensus_cnv/GISTIC_analysis/all_data_by_genes.rmcnv.pt_170207.txt"), 
+                                   fill = TRUE, header = TRUE)
+
 # Processing --------------------------------------------------------------
-## Processing consensus_cn_gene
+## Processing gene level calls
 ### Keeping all columns seen in ids
 consensus_cn_gene_selected <- consensus_cn_gene[, grepl(paste(ids_X, collapse = "|"),
                                                         names(consensus_cn_gene),)]
