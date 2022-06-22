@@ -7,6 +7,11 @@ all_CNV_files <- list.files(path = "data/consensus_cnv/consensus.20170119.somati
 interest_CNV_files <- subset(all_CNV_files, grepl(paste0(list_ids, collapse = "|"),
                                                   all_CNV_files))
 
+for (i in 1:length(interest_CNV_files)) {
+  assign(interest_CNV_files[i],
+         read.table(paste0(here::here("data/consensus_cnv/consensus.20170119.somatic.cna.annotated/"),
+                      interest_CNV_files[i]), header = TRUE))
+}
 
 # Processing --------------------------------------------------------------
 ## Processing consensus_cn_gene
