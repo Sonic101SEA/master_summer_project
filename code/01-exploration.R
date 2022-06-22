@@ -8,8 +8,8 @@ cna_annotated <- read.table(here::here("data/consensus_cnv/consensus.20170119.so
 ### Major
 consensus_cn_major_gene <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), fill = TRUE, header = TRUE)
 
-### Level calls
-consensus_cn_level <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_level_calls.by_gene.170214.txt"), fill = TRUE, header = TRUE)
+### Gene Level calls
+consensus_cn_gene_level <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_level_calls.by_gene.170214.txt"), fill = TRUE, header = TRUE)
 
 ### GISTIC Analysis
 
