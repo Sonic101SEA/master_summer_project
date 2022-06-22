@@ -21,3 +21,5 @@ id_and_response_with_pcawg_overview includes data with ids combined with therapy
 id_and_therapy_response includes data with ids combined with therapy response only
 
 Ids contain the ids of interest only
+
+pcawg_overview_data contains other clinical features obtained in the pcawg study
