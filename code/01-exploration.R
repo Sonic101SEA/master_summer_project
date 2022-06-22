@@ -39,13 +39,6 @@ id_with_response_overview <- merge(id_with_response, overview_data, by = "tumour
 ids <- as.character(id_with_response_overview$tumour_specimen_aliquot_id)
 ids_X <- paste("X", ids, sep = "")
 
-## Processing consensus_cn_gene
-### Keeping all columns seen in ids
-consensus_cn_gene_selected <- consensus_cn_gene[, grepl(paste(ids_X, collapse = "|"),
-                                                        names(consensus_cn_gene),)]
-  # Work in progress
-consensus_cn_gene_selected <- as.data.frame(consensus_cn_gene_selected)
-
 
 # Output files ------------------------------------------------------------
 
