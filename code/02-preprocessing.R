@@ -16,7 +16,7 @@ for (i in 1:length(interest_CNV_files)) {
 
 ### For reading all the CNV files into a list (Use this)
 CNV_files_list <- lapply(paste0(here::here("data/consensus_cnv/consensus.20170119.somatic.cna.annotated/"), interest_CNV_files), 
-                         read.table, header = TRUE)
+                         read.table, header = TRUE, stringsAsFactors = FALSE)
 
 ## Reading SV files for ids of interest
 
@@ -33,7 +33,7 @@ for (i in 1:length(interest_SV_files)) {
 
 ### For reading all the SV files into a list (Use this)
 SV_files_list <- lapply(paste0(here::here("data/consensus_sv/tcga/open/"), interest_SV_files), 
-                         read.table, header = TRUE)
+                         read.table, header = TRUE, stringsAsFactors = FALSE)
 
 
 ## Reading gene level calls in CNV
