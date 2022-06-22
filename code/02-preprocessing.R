@@ -40,6 +40,11 @@ SV_files_list <- lapply(paste0(here::here("data/consensus_sv/tcga/open/"), inter
 cnv_gene_level_calls <- read.table(here::here("data/consensus_cnv/GISTIC_analysis/all_data_by_genes.rmcnv.pt_170207.txt"), 
                                    fill = TRUE, header = TRUE)
 
+
+# Functions ---------------------------------------------------------------
+
+
+
 # Processing --------------------------------------------------------------
 ## Processing gene level calls
 ### Keeping all columns seen in ids
