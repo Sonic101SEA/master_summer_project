@@ -1,8 +1,11 @@
 
 # Data --------------------------------------------------------------------
+list_ids <- scan(here::here("data/ids.txt"), character(), quote = "")
 
-
-
+## Reading CNV files for ids of interest
+all_CNV_files <- list.files(path = "data/consensus_cnv/consensus.20170119.somatic.cna.annotated", pattern = "*.txt")
+interest_CNV_files <- subset(all_CNV_files, grepl(paste0(list_ids, collapse = "|"),
+                                                  all_CNV_files))
 
 
 # Processing --------------------------------------------------------------
