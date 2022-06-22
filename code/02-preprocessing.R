@@ -1,6 +1,6 @@
 
 # Data --------------------------------------------------------------------
-list_ids <- scan(here::here("data/ids.txt"), character(), quote = "")
+list_ids <- scan(here::here("data/ids_of_interest.txt"), character(), quote = "")
 
 ## Reading CNV files for ids of interest
 all_CNV_files <- list.files(path = "data/consensus_cnv/consensus.20170119.somatic.cna.annotated", pattern = "*.txt")

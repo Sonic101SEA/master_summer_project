@@ -47,7 +47,7 @@ ids_X <- paste("X", ids, sep = "")
 ## Output id and response only
 # write.csv(id_with_response, file = "data/id_and_therapy_response.csv")
 ## Output id only
-# write.table(ids, file = "data/ids.txt", col.names = FALSE, row.names = FALSE, quote = FALSE)
+# write.table(ids, file = "data/ids_of_interest.txt", col.names = FALSE, row.names = FALSE, quote = FALSE)
   # Note: The ids here are the 42 donors we are interested in
 
 

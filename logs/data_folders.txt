@@ -15,3 +15,9 @@ consensus_sv contains the structural variants
 
 
 The data folder also contains the ID mapping for ICGC and TCGA donors, as well as the outcome response of platinum therapy for each donor.
+
+id_and_response_with_pcawg_overview includes data with ids combined with therapy response and PCAWG overview data
+
+id_and_therapy_response includes data with ids combined with therapy response only
+
+Ids contain the ids of interest only
