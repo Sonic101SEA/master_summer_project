@@ -35,7 +35,7 @@ id_with_response <- merge(platinum_response, id_mapping, by.x = "SampleCode", by
 ## Merging overview data with id_with_response
 id_with_response_overview <- merge(id_with_response, overview_data, by = "tumour_specimen_aliquot_id", all.x = TRUE)
 
-## Names of IDs
+## Names of IDs with response
 ids <- as.character(id_with_response_overview$tumour_specimen_aliquot_id)
 ids_X <- paste("X", ids, sep = "")
 
@@ -49,5 +49,12 @@ consensus_cn_gene_selected <- as.data.frame(consensus_cn_gene_selected)
 
 # Output files ------------------------------------------------------------
 
+## Output id and response with pcawg overview
 # write.csv(id_with_response_overview, file = "data/id_and_response_with_pcawg_overview.csv")
+## Output id and response only
 # write.csv(id_with_response, file = "data/id_and_therapy_response.csv")
+## Output id only
+# write.table(ids, file = "data/ids.txt", col.names = FALSE, row.names = FALSE, quote = FALSE)
+  # Note: The ids here are the 42 donors we are interested in
+
+
