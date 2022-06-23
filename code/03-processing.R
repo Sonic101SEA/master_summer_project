@@ -6,6 +6,9 @@
 
 # Functions ---------------------------------------------------------------
 
+## Helper Functions
+source(here::here("../cnsignatures/helper_functions.R"))
+
 ## extractCopynumnberFeatures: This function takes as input a collection of absolute copy-number profiles and returns a list of copy-number features extracted from these samples. 
 ## Copy-number profiles can be input as either a QDNAseq object, or as a list of segment tables. 
 ##The segment tables (one for each sample) should have the following column headers: "chromosome", "start", "end", "segVal".  
@@ -13,10 +16,10 @@
 extractCopynumberFeatures<-function(CN_data, cores = 1)
 {
   #get chromosome lengths
-  chrlen<-read.table(paste(this_path,"data/hg19.chrom.sizes.txt",sep="/"),sep="\t",stringsAsFactors = F)[1:24,]
+  chrlen<-read.table(here::here("../cnsignatures/data/hg19.chrom.sizes.txt"), sep="\t",stringsAsFactors = F)[1:24,]
   
   #get centromere locations
-  gaps<-read.table(paste(this_path,"data/gap_hg19.txt",sep="/"),sep="\t",header=F,stringsAsFactors = F)
+  gaps<-read.table(here::here("../cnsignatures/data/gap_hg19.txt"),sep="\t",header=F,stringsAsFactors = F)
   centromeres<-gaps[gaps[,8]=="centromere",]
   
   if(cores > 1) {
@@ -61,7 +64,7 @@ generateSampleByComponentMatrix<-function(CN_features, all_components=NULL, core
 {
   if(is.null(all_components))
   {
-    all_components<-readRDS(paste(this_path,"data/component_parameters.rds",sep="/"))
+    all_components<-readRDS(here::here("../cnsignatures/data/component_parameters.rds"))
   }
   
   if(cores > 1){
@@ -96,7 +99,7 @@ quantifySignatures<-function(sample_by_component,component_by_signature=NULL)
 {
   if(is.null(component_by_signature))
   {
-    component_by_signature<-readRDS(paste(this_path,"data/feat_sig_mat.rds",sep="/"))
+    component_by_signature<-readRDS(here::here("data/feat_sig_mat.rds"))
   }
   signature_by_sample<-YAPSA::LCD(t(sample_by_component),
                                   YAPSA:::normalize_df_per_dim(component_by_signature,2))
@@ -107,3 +110,4 @@ quantifySignatures<-function(sample_by_component,component_by_signature=NULL)
 # Processing --------------------------------------------------------------
 
 ## Copy Number Signatures
+extractCopynumberFeatures(CNV_files_list)
