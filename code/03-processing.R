@@ -4,11 +4,13 @@
 
 
 
-# Functions ---------------------------------------------------------------
+
+# Copy Number Functions ---------------------------------------------------------------
 
 ## Helper Functions
 source(here::here("../cnsignatures/helper_functions.R"))
 
+## Main Functions
 ## extractCopynumnberFeatures: This function takes as input a collection of absolute copy-number profiles and returns a list of copy-number features extracted from these samples. 
 ## Copy-number profiles can be input as either a QDNAseq object, or as a list of segment tables. 
 ##The segment tables (one for each sample) should have the following column headers: "chromosome", "start", "end", "segVal".  
@@ -110,4 +112,5 @@ quantifySignatures<-function(sample_by_component,component_by_signature=NULL)
 # Processing --------------------------------------------------------------
 
 ## Copy Number Signatures
-extractCopynumberFeatures(CNV_files_list)
+extractCopynumberFeatures(segVal_CNV_files)
+
