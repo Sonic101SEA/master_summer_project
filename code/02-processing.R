@@ -59,7 +59,7 @@ generate_segValue <- function(CNV_dataframe)
 }
 
 ## To generate total copy number for each sample, including major and minor
-generate_total_mut_load <- function(CNV_dataframe)
+generate_total_cn_mut_load <- function(CNV_dataframe)
 {
   total_cn <- sum(CNV_dataframe$total_cn, na.rm = TRUE)
   major_cn <- sum(CNV_dataframe$major_cn, na.rm = TRUE)
@@ -182,7 +182,7 @@ drop_CNV_files <- lapply(CNV_files_list, drop_columns_CNV)
 segVal_CNV_files <- lapply(drop_CNV_files, generate_segValue)
 
 ### Adding up copy numbers for each sample
-cn_mut_load <- lapply(CNV_files_list, generate_total_mut_load)
+cn_mut_load <- lapply(CNV_files_list, generate_total_cn_mut_load)
 
 ## Processing gene level calls for CNV
 ### Keeping all columns seen in ids
