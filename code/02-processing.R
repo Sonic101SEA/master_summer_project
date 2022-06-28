@@ -173,6 +173,12 @@ quantifySignatures<-function(sample_by_component,component_by_signature=NULL)
   signature_by_sample
 }
 
+
+# SV Classes --------------------------------------------------------------
+
+## To obtain all sv classes in dataset
+unique(unlist(lapply(SV_files_list, `[[`, "svclass")))
+
 # Processing --------------------------------------------------------------
 ## Processing CNV data
 ### Dropping columns
