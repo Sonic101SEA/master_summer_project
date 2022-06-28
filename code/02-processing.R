@@ -179,7 +179,7 @@ quantifySignatures<-function(sample_by_component,component_by_signature=NULL)
 ## To obtain all sv classes in dataset
 unique(unlist(lapply(SV_files_list, `[[`, "svclass")))
 
-# Processing --------------------------------------------------------------
+# CNV processing --------------------------------------------------------------
 ## Processing CNV data
 ### Dropping columns
 drop_CNV_files <- lapply(CNV_files_list, drop_columns_CNV)
@@ -189,6 +189,9 @@ segVal_CNV_files <- lapply(drop_CNV_files, generate_segValue)
 
 ### Adding up copy numbers for each sample
 cn_mut_load <- lapply(CNV_files_list, generate_total_cn_mut_load)
+
+
+# Gene Level Calls --------------------------------------------------------
 
 ## Processing gene level calls for CNV
 ### Keeping all columns seen in ids
