@@ -12,7 +12,7 @@ all_CNV_files <- list.files(path = "data/consensus_cnv/consensus.20170119.somati
 interest_CNV_files <- subset(all_CNV_files, grepl(paste0(list_ids_icgc, collapse = "|"),
                                                   all_CNV_files))
 
-## Creating IDs to put back into dataframe
+## Creating selected IDs to put back into dataframe
 selected_icgc_ids <- sapply(strsplit(interest_CNV_files, split = ".", fixed = TRUE), function(x) (x[1]))
 
 ### For creating multiple objects
