@@ -54,6 +54,10 @@ SV_files_list <- lapply(paste0(here::here("data/consensus_sv/tcga/open/"), inter
 cnv_major_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), 
                                          fill = TRUE, header = TRUE)
 
+### Consensus gene level calls
+cnv_consensus_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_level_calls.by_gene.170214.txt"), 
+                                             fill = TRUE, header = TRUE)
+
 ## Reading pan-cancer compendium CN signatures for PCAWG
 pan_cancer_cn_signatures_pcawg <- read.csv(here::here("data/chromosomal_instability_data/PCAWG_activities_scaled.csv"), row.names = 1)
 
