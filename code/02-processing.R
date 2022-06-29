@@ -1,4 +1,9 @@
 
+# Packages ----------------------------------------------------------------
+
+library(tidyr)
+
+
 # Data --------------------------------------------------------------------
 ## Reading the IDs of interest
 list_ids_icgc <- scan(here::here("data/ids_of_interest_icgc.txt"), character(), quote = "")
@@ -193,6 +198,7 @@ cn_mut_load <- lapply(CNV_files_list, generate_total_cn_mut_load)
 
 ## Converting the list of lists to one dataframe
 mut_load_dataframe <- data.frame(do.call(rbind, cn_mut_load))
+mut_load_dataframe <- data.frame(apply(mut_load_dataframe, 2, unlist))
 rownames(mut_load_dataframe) <- selected_icgc_ids # Adding id rownames
 
 
@@ -221,6 +227,6 @@ final_dataframe <- merge(final_dataframe, id_with_pcawg_overview[, c("tumour_spe
 final_dataframe <- merge(final_dataframe, mut_load_dataframe, by.x = "Row.names", by.y = 'row.names')
 
 # Initial Analysis --------------------------------------------------------
-
 hist(final_dataframe$age)
 barplot(summary(final_dataframe$Condition))
+barplot(total_cn ~ Row.names, data = final_dataframe, las = 2, axisnames = FALSE)
