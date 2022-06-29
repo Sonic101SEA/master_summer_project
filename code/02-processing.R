@@ -12,6 +12,9 @@ all_CNV_files <- list.files(path = "data/consensus_cnv/consensus.20170119.somati
 interest_CNV_files <- subset(all_CNV_files, grepl(paste0(list_ids_icgc, collapse = "|"),
                                                   all_CNV_files))
 
+## Creating IDs to put back into dataframe
+selected_icgc_ids <- sapply(strsplit(interest_CNV_files, split = ".", fixed = TRUE), function(x) (x[1]))
+
 ### For creating multiple objects
 # for (i in 1:length(interest_CNV_files)) {
 #   assign(interest_CNV_files[i],
@@ -185,10 +188,12 @@ quantifySignatures<-function(sample_by_component,component_by_signature=NULL)
 unique(unlist(lapply(SV_files_list, `[[`, "svclass")))
 
 # CNV processing --------------------------------------------------------------
-## Processing CNV data
-
-### Adding up copy numbers for each sample
+## Adding up copy numbers for each sample
 cn_mut_load <- lapply(CNV_files_list, generate_total_cn_mut_load)
+
+## Converting the list of lists to one dataframe
+mut_load_dataframe <- data.frame(do.call(rbind, cn_mut_load))
+rownames(mut_load_dataframe) <- selected_icgc_ids # Adding id rownames
 
 
 # Gene Level Calls --------------------------------------------------------
@@ -207,9 +212,13 @@ extractCopynumberFeatures(segVal_CNV_files)
 # Combining into one dataframe** --------------------------------------------
 
 final_dataframe <- pan_cancer_cn_signatures_pcawg_selected
+
+## Merging overview data
 final_dataframe <- merge(final_dataframe, id_with_pcawg_overview[, c("tumour_specimen_aliquot_id","Condition", "age")], 
                          by.x = "row.names", by.y = "tumour_specimen_aliquot_id", all.x = TRUE)
 
+## Merging copy number counts data
+final_dataframe <- merge(final_dataframe, mut_load_dataframe, by.x = "Row.names", by.y = 'row.names')
 
 # Initial Analysis --------------------------------------------------------
 
