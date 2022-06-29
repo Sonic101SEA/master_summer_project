@@ -3,6 +3,9 @@
 list_ids_icgc <- scan(here::here("data/ids_of_interest_icgc.txt"), character(), quote = "")
 list_ids_tcga <- scan(here::here("data/ids_of_interest_tcga.txt"), character(), quote = "")
 
+## Overall data
+id_with_pcawg_overview <- read.csv(here::here("data/id_and_response_with_pcawg_overview.csv"), row.names = 1)
+
 ## Reading CNV files for ids of interest
 all_CNV_files <- list.files(path = "data/consensus_cnv/consensus.20170119.somatic.cna.annotated", pattern = "*.txt")
 interest_CNV_files <- subset(all_CNV_files, grepl(paste0(list_ids_icgc, collapse = "|"),
@@ -50,6 +53,7 @@ pan_cancer_cn_signatures_pcawg_selected <- subset(pan_cancer_cn_signatures_pcawg
                                                                             rownames(pan_cancer_cn_signatures_pcawg)))
 
 ## Reading pan-cancer compendium CN signautres for tcga
+## Note: Use the PCAWG dataset as it uses WGS
 pan_cancer_cn_signatures_tcga <- read.csv(here::here("data/chromosomal_instability_data/tcga_activities_scaled.csv"), row.names = 1)
 
 ### Subset selected ids for pan-cancer compendium CN signatures for TCGA
@@ -216,3 +220,9 @@ consensus_cn_gene_selected <- as.data.frame(consensus_cn_gene_selected)
 ## Copy Number Signatures
 extractCopynumberFeatures(segVal_CNV_files)
 
+
+# Combining into one dataframe** --------------------------------------------
+
+final_dataframe <- pan_cancer_cn_signatures_pcawg_selected
+final_dataframe <- merge(final_dataframe, id_with_pcawg_overview[, c("tumour_specimen_aliquot_id","Condition", "age")], 
+                         by.x = "row.names", by.y = "tumour_specimen_aliquot_id", all.x = TRUE)
