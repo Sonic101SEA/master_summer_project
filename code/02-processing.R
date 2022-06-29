@@ -198,11 +198,6 @@ unique(unlist(lapply(SV_files_list, `[[`, "svclass")))
 
 # CNV processing --------------------------------------------------------------
 ## Processing CNV data
-### Dropping columns
-drop_CNV_files <- lapply(CNV_files_list, drop_columns_CNV)
-
-### Generating segment values
-segVal_CNV_files <- lapply(drop_CNV_files, generate_segValue)
 
 ### Adding up copy numbers for each sample
 cn_mut_load <- lapply(CNV_files_list, generate_total_cn_mut_load)
@@ -226,3 +221,9 @@ extractCopynumberFeatures(segVal_CNV_files)
 final_dataframe <- pan_cancer_cn_signatures_pcawg_selected
 final_dataframe <- merge(final_dataframe, id_with_pcawg_overview[, c("tumour_specimen_aliquot_id","Condition", "age")], 
                          by.x = "row.names", by.y = "tumour_specimen_aliquot_id", all.x = TRUE)
+
+
+# Initial Analysis --------------------------------------------------------
+
+hist(final_dataframe$age)
+barplot(summary(final_dataframe$Condition))
