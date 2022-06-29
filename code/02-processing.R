@@ -211,9 +211,6 @@ consensus_cn_gene_selected <- consensus_cn_gene[, grepl(paste(ids_X, collapse = 
 # Work in progress
 consensus_cn_gene_selected <- as.data.frame(consensus_cn_gene_selected)
 
-## Copy Number Signatures
-extractCopynumberFeatures(segVal_CNV_files)
-
 
 # Combining into one dataframe** --------------------------------------------
 
