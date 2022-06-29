@@ -50,8 +50,8 @@ SV_files_list <- lapply(paste0(here::here("data/consensus_sv/tcga/open/"), inter
 
 
 ## Reading gene level calls in CNV
-### Major
-cnv_major_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), 
+### CN gene level calls
+cnv_cn_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), 
                                          fill = TRUE, header = TRUE)
 
 ### Consensus gene level calls
