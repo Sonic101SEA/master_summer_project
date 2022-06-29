@@ -1,9 +1,10 @@
 
 # Data --------------------------------------------------------------------
+## Reading the IDs of interest
 list_ids_icgc <- scan(here::here("data/ids_of_interest_icgc.txt"), character(), quote = "")
 list_ids_tcga <- scan(here::here("data/ids_of_interest_tcga.txt"), character(), quote = "")
 
-## Overall data
+## Reading overall data
 id_with_pcawg_overview <- read.csv(here::here("data/id_and_response_with_pcawg_overview.csv"), row.names = 1)
 
 ## Reading CNV files for ids of interest
@@ -54,26 +55,13 @@ pan_cancer_cn_signatures_pcawg_selected <- subset(pan_cancer_cn_signatures_pcawg
 
 ## Reading pan-cancer compendium CN signautres for tcga
 ## Note: Use the PCAWG dataset as it uses WGS
-pan_cancer_cn_signatures_tcga <- read.csv(here::here("data/chromosomal_instability_data/tcga_activities_scaled.csv"), row.names = 1)
+# pan_cancer_cn_signatures_tcga <- read.csv(here::here("data/chromosomal_instability_data/tcga_activities_scaled.csv"), row.names = 1)
 
 ### Subset selected ids for pan-cancer compendium CN signatures for TCGA
-pan_cancer_cn_signatures_tcga_selected <- subset(pan_cancer_cn_signatures_tcga, grepl(paste0(list_ids_tcga, collapse = "|"),
-                                                                                       rownames(pan_cancer_cn_signatures_tcga)))
+# pan_cancer_cn_signatures_tcga_selected <- subset(pan_cancer_cn_signatures_tcga, grepl(paste0(list_ids_tcga, collapse = "|"),
+#                                                                                       rownames(pan_cancer_cn_signatures_tcga)))
 
 # Functions for other processing methods ---------------------------------------------------------------
-
-## To drop columns
-drop_columns_CNV <- function(CNV_dataframe)
-{
-  CNV_dataframe <- CNV_dataframe[, -c(4:38)]
-}
-
-## To generate segment value from start and end of chromosome
-generate_segValue <- function(CNV_dataframe)
-{
-  CNV_dataframe$segVal <- CNV_dataframe$end - CNV_dataframe$start
-  CNV_dataframe
-}
 
 ## To generate total copy number for each sample, including major and minor
 generate_total_cn_mut_load <- function(CNV_dataframe)
