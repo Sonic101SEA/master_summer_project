@@ -36,7 +36,8 @@ id_with_response <- merge(platinum_response, id_mapping, by.x = "SampleCode", by
 id_with_response_overview <- merge(id_with_response, overview_data, by = "tumour_specimen_aliquot_id", all.x = TRUE)
 
 ## Names of IDs with response
-ids <- as.character(id_with_response_overview$tumour_specimen_aliquot_id)
+ids_pcawg <- as.character(id_with_response_overview$tumour_specimen_aliquot_id)
+ids_tcga <- as.character(id_with_response_overview$SampleCode)
 ids_X <- paste("X", ids, sep = "")
 
 
@@ -47,7 +48,8 @@ ids_X <- paste("X", ids, sep = "")
 ## Output id and response only
 # write.csv(id_with_response, file = "data/id_and_therapy_response.csv")
 ## Output id only
-# write.table(ids, file = "data/ids_of_interest.txt", col.names = FALSE, row.names = FALSE, quote = FALSE)
+# write.table(ids_pcawg, file = "data/ids_of_interest.txt", col.names = FALSE, row.names = FALSE, quote = FALSE)
+# write.table(ids_tcga, file = "data/ids_of_interest_tcga.txt", col.names = FALSE, row.names = FALSE, quote = FALSE)
   # Note: The ids here are the 42 donors we are interested in
 
 

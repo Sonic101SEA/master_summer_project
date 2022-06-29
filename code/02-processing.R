@@ -1,10 +1,10 @@
 
 # Data --------------------------------------------------------------------
-list_ids <- scan(here::here("data/ids_of_interest.txt"), character(), quote = "")
+list_ids_icgc <- scan(here::here("data/ids_of_interest.txt"), character(), quote = "")
 
 ## Reading CNV files for ids of interest
 all_CNV_files <- list.files(path = "data/consensus_cnv/consensus.20170119.somatic.cna.annotated", pattern = "*.txt")
-interest_CNV_files <- subset(all_CNV_files, grepl(paste0(list_ids, collapse = "|"),
+interest_CNV_files <- subset(all_CNV_files, grepl(paste0(list_ids_icgc, collapse = "|"),
                                                   all_CNV_files))
 
 ### For creating multiple objects
@@ -21,7 +21,7 @@ CNV_files_list <- lapply(paste0(here::here("data/consensus_cnv/consensus.2017011
 ## Reading SV files for ids of interest
 
 all_SV_files <- list.files(path = "data/consensus_sv/tcga/open", pattern = "*.gz")
-interest_SV_files <- subset(all_SV_files, grepl(paste0(list_ids, collapse = "|"),
+interest_SV_files <- subset(all_SV_files, grepl(paste0(list_ids_icgc, collapse = "|"),
                                                 all_SV_files))
 
 ### For creating multiple objects
@@ -41,6 +41,12 @@ SV_files_list <- lapply(paste0(here::here("data/consensus_sv/tcga/open/"), inter
 cnv_major_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), 
                                          fill = TRUE, header = TRUE)
 
+## Reading pan-cancer compendium CN signatures
+pan_cancer_cn_signatures <- read.csv(here::here("data/chromosomal_instability_data/PCAWG_activities_scaled.csv"))
+
+### Subset selected ids for pan-cancer compendium CN signatures
+pan_cancer_cn_signatures_selected <- subset(pan_cancer_cn_signatures, grepl(paste0(list_ids_icgc, collapse = "|"),
+                                                                            pan_cancer_cn_signatures$X))
 
 
 # Functions for other processing methods ---------------------------------------------------------------
