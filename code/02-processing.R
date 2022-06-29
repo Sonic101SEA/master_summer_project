@@ -42,13 +42,19 @@ SV_files_list <- lapply(paste0(here::here("data/consensus_sv/tcga/open/"), inter
 cnv_major_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), 
                                          fill = TRUE, header = TRUE)
 
-## Reading pan-cancer compendium CN signatures
-pan_cancer_cn_signatures <- read.csv(here::here("data/chromosomal_instability_data/PCAWG_activities_scaled.csv"))
+## Reading pan-cancer compendium CN signatures for PCAWG
+pan_cancer_cn_signatures_pcawg <- read.csv(here::here("data/chromosomal_instability_data/PCAWG_activities_scaled.csv"), row.names = 1)
 
-### Subset selected ids for pan-cancer compendium CN signatures
-pan_cancer_cn_signatures_selected <- subset(pan_cancer_cn_signatures, grepl(paste0(list_ids_icgc, collapse = "|"),
-                                                                            pan_cancer_cn_signatures$X))
+### Subset selected ids for pan-cancer compendium CN signatures for PCAWG
+pan_cancer_cn_signatures_pcawg_selected <- subset(pan_cancer_cn_signatures_pcawg, grepl(paste0(list_ids_icgc, collapse = "|"),
+                                                                            rownames(pan_cancer_cn_signatures_pcawg)))
 
+## Reading pan-cancer compendium CN signautres for tcga
+pan_cancer_cn_signatures_tcga <- read.csv(here::here("data/chromosomal_instability_data/tcga_activities_scaled.csv"), row.names = 1)
+
+### Subset selected ids for pan-cancer compendium CN signatures for TCGA
+pan_cancer_cn_signatures_tcga_selected <- subset(pan_cancer_cn_signatures_tcga, grepl(paste0(list_ids_tcga, collapse = "|"),
+                                                                                       rownames(pan_cancer_cn_signatures_tcga)))
 
 # Functions for other processing methods ---------------------------------------------------------------
 
