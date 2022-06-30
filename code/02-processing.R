@@ -132,6 +132,11 @@ list_genes_selected <- c("BRCA1", "BRCA2", "ATM", "BARD1",
                          "BRIP1", "CHEK1", "CHEK2", "FAM175A",
                          "MRE11A", "NBN", "PALB2", "RAD51C", "RAD51D")
 
+calls_by_gene_selected_genes_interest <- subset(calls_by_gene_selected, rownames(calls_by_gene_selected) %in% list_genes_selected)
+calls_by_gene_selected_genes_interest_t <- data.frame(t(calls_by_gene_selected_genes_interest)) # Transposing rows and columns
+
+## Removing X in rownames
+rownames(calls_by_gene_selected_genes_interest_t) <- sub("X*", "", rownames(calls_by_gene_selected_genes_interest_t))
 
 # Combining into one dataframe** --------------------------------------------
 
@@ -141,8 +146,12 @@ final_dataframe <- pan_cancer_cn_signatures_pcawg_selected
 final_dataframe <- merge(final_dataframe, id_with_pcawg_overview[, c("tumour_specimen_aliquot_id","Condition", "age")], 
                          by.x = "row.names", by.y = "tumour_specimen_aliquot_id", all.x = TRUE)
 
-## Merging copy number counts data (Do not using absolute copy number values)
-final_dataframe <- merge(final_dataframe, mut_load_dataframe, by.x = "Row.names", by.y = 'row.names')
+## Merging gene level calls data
+final_dataframe <- merge(final_dataframe, calls_by_gene_selected_genes_interest_t,
+                         by.x = "Row.names", by.y = "row.names", all.x = TRUE)
+
+## Merging copy number counts data (Do not use absolute copy number values)
+# final_dataframe <- merge(final_dataframe, mut_load_dataframe, by.x = "Row.names", by.y = 'row.names')
 
 # Initial Analysis --------------------------------------------------------
 hist(final_dataframe$age)
