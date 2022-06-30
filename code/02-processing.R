@@ -60,6 +60,9 @@ pan_cancer_cn_signatures_pcawg_selected <- subset(pan_cancer_cn_signatures_pcawg
 # pan_cancer_cn_signatures_tcga_selected <- subset(pan_cancer_cn_signatures_tcga, grepl(paste0(list_ids_tcga, collapse = "|"),
 #                                                                                       rownames(pan_cancer_cn_signatures_tcga)))
 
+## Reading whole genome duplication for PCAWG from evolution and heterogeneity
+wgd_pcawg_evolution <- read.table(here::here("data/evolution_and_heterogeneity/2018-07-24-wgdMrcaTiming.txt"), header = TRUE)
+
 # Functions for other processing methods ---------------------------------------------------------------
 
 ## To generate total copy number for each sample, including major and minor DO NOT USE
@@ -138,17 +141,24 @@ calls_by_gene_selected_genes_interest_t <- data.frame(t(calls_by_gene_selected_g
 ## Removing X in rownames
 rownames(calls_by_gene_selected_genes_interest_t) <- sub("X*", "", rownames(calls_by_gene_selected_genes_interest_t))
 
+
+# Whole Genome Duplication ------------------------------------------------
+
+wgd_pcawg_evolution_selected <- subset(wgd_pcawg_evolution, grepl(paste0(list_ids_icgc, collapse = "|"),
+                                                                             wgd_pcawg_evolution$uuid))
+
 # Combining into one dataframe** --------------------------------------------
 
-final_dataframe <- pan_cancer_cn_signatures_pcawg_selected
+final_dataframe <- id_with_pcawg_overview[, c("tumour_specimen_aliquot_id","Condition", "age")]
 
 ## Merging overview data
-final_dataframe <- merge(final_dataframe, id_with_pcawg_overview[, c("tumour_specimen_aliquot_id","Condition", "age")], 
-                         by.x = "row.names", by.y = "tumour_specimen_aliquot_id", all.x = TRUE)
+final_dataframe <- merge(final_dataframe, pan_cancer_cn_signatures_pcawg_selected, 
+                         by.x = "tumour_specimen_aliquot_id", by.y = "row.names", all.x = TRUE)
+final_dataframe[2, 3] <- 50 # Add age value to NA. This value was taken from evolution and heterogeneity dataset
 
 ## Merging gene level calls data
 final_dataframe <- merge(final_dataframe, calls_by_gene_selected_genes_interest_t,
-                         by.x = "Row.names", by.y = "row.names", all.x = TRUE)
+                         by.x = "tumour_specimen_aliquot_id", by.y = "row.names", all.x = TRUE)
 
 ## Merging copy number counts data (Do not use absolute copy number values)
 # final_dataframe <- merge(final_dataframe, mut_load_dataframe, by.x = "Row.names", by.y = 'row.names')
