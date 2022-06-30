@@ -160,6 +160,10 @@ final_dataframe[2, 3] <- 50 # Add age value to NA. This value was taken from evo
 final_dataframe <- merge(final_dataframe, calls_by_gene_selected_genes_interest_t,
                          by.x = "tumour_specimen_aliquot_id", by.y = "row.names", all.x = TRUE)
 
+## Merging WGD data
+final_dataframe <- merge(final_dataframe, wgd_pcawg_evolution_selected[, c("uuid", "WGD")],
+                         by.x = "tumour_specimen_aliquot_id", by.y = "uuid", all.x = TRUE)
+
 ## Merging copy number counts data (Do not use absolute copy number values)
 # final_dataframe <- merge(final_dataframe, mut_load_dataframe, by.x = "Row.names", by.y = 'row.names')
 
