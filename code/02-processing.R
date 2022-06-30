@@ -32,9 +32,9 @@ CNV_files_list <- lapply(paste0(here::here("data/consensus_cnv/consensus.2017011
 
 ## Reading SV files for ids of interest
 
-all_SV_files <- list.files(path = "data/consensus_sv/tcga/open", pattern = "*.gz")
-interest_SV_files <- subset(all_SV_files, grepl(paste0(list_ids_icgc, collapse = "|"),
-                                                all_SV_files))
+# all_SV_files <- list.files(path = "data/consensus_sv/tcga/open", pattern = "*.gz")
+# interest_SV_files <- subset(all_SV_files, grepl(paste0(list_ids_icgc, collapse = "|"),
+#                                                 all_SV_files))
 
 ### For creating multiple objects
 # for (i in 1:length(interest_SV_files)) {
@@ -44,8 +44,8 @@ interest_SV_files <- subset(all_SV_files, grepl(paste0(list_ids_icgc, collapse =
 # }
 
 ### For reading all the SV files into a list (Use this)
-SV_files_list <- lapply(paste0(here::here("data/consensus_sv/tcga/open/"), interest_SV_files), 
-                        read.table, header = TRUE, stringsAsFactors = FALSE)
+# SV_files_list <- lapply(paste0(here::here("data/consensus_sv/tcga/open/"), interest_SV_files), 
+#                         read.table, header = TRUE, stringsAsFactors = FALSE)
 
 
 ## Reading gene level calls in CNV
@@ -75,14 +75,14 @@ pan_cancer_cn_signatures_pcawg_selected <- subset(pan_cancer_cn_signatures_pcawg
 # Functions for other processing methods ---------------------------------------------------------------
 
 ## To generate total copy number for each sample, including major and minor DO NOT USE
-# generate_total_cn_mut_load <- function(CNV_dataframe)
-# {
-#   total_cn <- sum(CNV_dataframe$total_cn, na.rm = TRUE)
-#   major_cn <- sum(CNV_dataframe$major_cn, na.rm = TRUE)
-#   minor_cn <- sum(CNV_dataframe$minor_cn, na.rm = TRUE)
-#   out <- list("total_cn" = total_cn, "major_cn" = major_cn, "minor_cn" = minor_cn)
-#   return(out)
-# }
+generate_total_cn_mut_load <- function(CNV_dataframe)
+{
+  total_cn <- sum(CNV_dataframe$total_cn, na.rm = TRUE)
+  major_cn <- sum(CNV_dataframe$major_cn, na.rm = TRUE)
+  minor_cn <- sum(CNV_dataframe$minor_cn, na.rm = TRUE)
+  out <- list("total_cn" = total_cn, "major_cn" = major_cn, "minor_cn" = minor_cn)
+  return(out)
+}
 
 
 # Copy Number Functions ---------------------------------------------------------------
@@ -193,16 +193,16 @@ quantifySignatures<-function(sample_by_component,component_by_signature=NULL)
 # SV Classes --------------------------------------------------------------
 
 ## To obtain all sv classes in dataset
-unique(unlist(lapply(SV_files_list, `[[`, "svclass")))
+# unique(unlist(lapply(SV_files_list, `[[`, "svclass")))
 
 # CNV processing absolute copy numbers DO NOT USE --------------------------------------------------------------
 # ## Adding up copy numbers for each sample
-# cn_mut_load <- lapply(CNV_files_list, generate_total_cn_mut_load)
+cn_mut_load <- lapply(CNV_files_list, generate_total_cn_mut_load)
 # 
 # ## Converting the list of lists to one dataframe
-# mut_load_dataframe <- data.frame(do.call(rbind, cn_mut_load))
-# mut_load_dataframe <- data.frame(apply(mut_load_dataframe, 2, unlist))
-# rownames(mut_load_dataframe) <- selected_icgc_ids # Adding id rownames
+mut_load_dataframe <- data.frame(do.call(rbind, cn_mut_load))
+mut_load_dataframe <- data.frame(apply(mut_load_dataframe, 2, unlist))
+rownames(mut_load_dataframe) <- selected_icgc_ids # Adding id rownames
 
 
 # Gene Level Calls --------------------------------------------------------
@@ -211,20 +211,41 @@ unique(unlist(lapply(SV_files_list, `[[`, "svclass")))
 list_ids_icgc_sub_sep <- gsub("-", "\\.", list_ids_icgc)
 columns_keep_gene_level <- append(list_ids_icgc_sub_sep, c("Gene", "Symbol", "Locus", "ID", "Cytoband"))
 
-## Processing gene level calls for CNV
-### Keeping all columns with selected patients
+## Processing  CN by gene: Subsetting dataframe for patients of interest
 cnv_cn_gene_level_calls_selected <- cnv_cn_gene_level_calls[, grepl(paste(columns_keep_gene_level, collapse = "|"),
                                                         names(cnv_cn_gene_level_calls),)]
 
 cnv_cn_gene_level_calls_colnames_corrected <- gsub("\\.", "-", colnames(cnv_cn_gene_level_calls_selected))
 colnames(cnv_cn_gene_level_calls_selected) <- cnv_cn_gene_level_calls_colnames_corrected
 
+### Removing unnecessary columns and setting gene as rownames
+drop_columns <- c("Symbol", "Locus", "ID", "Cytoband")
+cnv_cn_gene_level_calls_selected <- cnv_cn_gene_level_calls_selected[, !names(cnv_cn_gene_level_calls_selected) %in% drop_columns]
+rownames(cnv_cn_gene_level_calls_selected) <- cnv_cn_gene_level_calls_selected[, 1]
+cnv_cn_gene_level_calls_selected[, 1] <- NULL
+
+## Processing level calls by gene
+
+calls_by_gene_selected <- cnv_consensus_gene_level_calls[, grepl(paste(columns_keep_gene_level, collapse = "|"),
+                                                          names(cnv_consensus_gene_level_calls),)]
+
+colnames(calls_by_gene_selected) <- cnv_cn_gene_level_calls_colnames_corrected
+
+### Removing unnecessary columns and setting gene as rownames
+calls_by_gene_selected<- calls_by_gene_selected[, !names(calls_by_gene_selected) %in% drop_columns]
+rownames(calls_by_gene_selected) <- calls_by_gene_selected[, 1]
+calls_by_gene_selected[, 1] <- NULL
+
+## Output files for gene level calls
 # write.csv(cnv_cn_gene_level_calls_selected, file = "data/consensus_cnv/gene_level_calls/selected_cn_by_gene.csv", 
-            # quote = FALSE)
+#             quote = FALSE)
 
-## Processing the gene level calls
+write.csv(calls_by_gene_selected, file = "data/consensus_cnv/gene_level_calls/selected_calls_by_gene.csv",
+          quote = FALSE)
 
-
+## Looking at gene level calls data
+sum(cnv_cn_gene_level_calls_selected$`X0664753b-7566-41e0-8006-7009c6735406`, na.rm = TRUE)
+apply(calls_by_gene_selected, 2, unique)
 
 # Combining into one dataframe** --------------------------------------------
 
@@ -235,7 +256,7 @@ final_dataframe <- merge(final_dataframe, id_with_pcawg_overview[, c("tumour_spe
                          by.x = "row.names", by.y = "tumour_specimen_aliquot_id", all.x = TRUE)
 
 ## Merging copy number counts data (Do not using absolute copy number values)
-# final_dataframe <- merge(final_dataframe, mut_load_dataframe, by.x = "Row.names", by.y = 'row.names')
+final_dataframe <- merge(final_dataframe, mut_load_dataframe, by.x = "Row.names", by.y = 'row.names')
 
 # Initial Analysis --------------------------------------------------------
 hist(final_dataframe$age)
