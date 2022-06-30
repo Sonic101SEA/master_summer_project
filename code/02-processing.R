@@ -222,6 +222,9 @@ colnames(cnv_cn_gene_level_calls_selected) <- cnv_cn_gene_level_calls_colnames_c
 # write.csv(cnv_cn_gene_level_calls_selected, file = "data/consensus_cnv/gene_level_calls/selected_cn_by_gene.csv", 
             # quote = FALSE)
 
+## Processing the gene level calls
+
+
 
 # Combining into one dataframe** --------------------------------------------
 
