@@ -23,3 +23,11 @@ id_and_therapy_response includes data with ids combined with therapy response on
 Ids contain the ids of interest only
 
 pcawg_overview_data contains other clinical features obtained in the pcawg study
+
+chromosomal_instability_data contains the CN signatures from the paper "A pan-cancer compendium of chromosomal instability"
+
+evolution_and_heterogeneity contains data on whole genome duplication timing and the signature changes obtained from the paper "The evolutionary history of 2658 cancers"
+
+signatures_paper_data contains the CN signatures from the paper "Signatures of copy number alterations in human cancer"
+
+snv_gene_level_calls contains data on the mutations in each gene for single nucleotide variations
