@@ -75,7 +75,7 @@ upstream_2kb_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sampl
 # Functions for other processing methods ---------------------------------------------------------------
 
 filtering_snv_genes_interest <- function(snv_dataframe, ids_subset, genes_subset){
-  # Function to filter out genes and patients of interest in a patient by gene matrix. Also converts it to a gene by patient matrix.
+  # Function to filter out genes and patients of interest in a patient by gene matrix for SNV data. Also converts it to a gene by patient matrix.
   # snv_dataframe: Input your dataframe
   # ids_subset: Input the ids you want to subset
   # genes_subset: Input the genes you want to subset
