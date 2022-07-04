@@ -1,9 +1,12 @@
 
 # Packages ----------------------------------------------------------------
 
-library(tidyr)
+library(dplyr)
 
 # Data --------------------------------------------------------------------
+## Reading the mapping IDs
+mapping_ids <- read.table(here::here("data/id_mapping_icgc2tcga.45_donors.txt"), header = TRUE)
+
 ## Reading the IDs of interest
 list_ids_icgc <- scan(here::here("data/ids_of_interest_icgc.txt"), character(), quote = "")
 list_ids_tcga <- scan(here::here("data/ids_of_interest_tcga.txt"), character(), quote = "")
@@ -207,6 +210,13 @@ final_dataframe <- merge(final_dataframe, calls_by_gene_selected_genes_interest_
 ## Merging WGD data
 final_dataframe <- merge(final_dataframe, wgd_pcawg_evolution_selected[, c("uuid", "WGD")],
                          by.x = "tumour_specimen_aliquot_id", by.y = "uuid", all.x = TRUE)
+
+## Adding TCGA IDs and reordering them
+final_dataframe <- merge(final_dataframe, mapping_ids[, c("tumour_specimen_aliquot_id", "TCGA_id")],
+                         by = "tumour_specimen_aliquot_id")
+
+final_dataframe <- final_dataframe %>%
+  relocate(TCGA_id, .before = Condition)
 
 ## Merging copy number counts data (Do not use absolute copy number values)
 # final_dataframe <- merge(final_dataframe, mut_load_dataframe, by.x = "Row.names", by.y = 'row.names')
