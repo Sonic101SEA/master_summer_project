@@ -218,8 +218,20 @@ final_dataframe <- merge(final_dataframe, mapping_ids[, c("tumour_specimen_aliqu
 final_dataframe <- final_dataframe %>%
   relocate(TCGA_id, .before = Condition)
 
-## Merging copy number counts data (Do not use absolute copy number values)
-# final_dataframe <- merge(final_dataframe, mut_load_dataframe, by.x = "Row.names", by.y = 'row.names')
+## Adding high and moderate impact variants to the dataframe
+### Renaming columns for high and moderate impact variants
+colnames(high_moderate_selected_genes_interest) <- paste("mh", colnames(high_moderate_selected_genes_interest), sep = "")
+
+## Merging high and moderate impact variants
+final_dataframe <- merge(final_dataframe, high_moderate_selected_genes_interest,
+                         by.x = "TCGA_id", by.y = "row.names")
+
+## Finalising dataframe by making the IDs to row names
+rownames(final_dataframe) <- final_dataframe$tumour_specimen_aliquot_id
+final_dataframe <- subset(final_dataframe, select = -c(tumour_specimen_aliquot_id))
+
+## Output final dataframe
+#write.csv(final_dataframe, "data/final_dataframe.csv")
 
 # Initial Analysis --------------------------------------------------------
 # hist(final_dataframe$age)
