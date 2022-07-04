@@ -75,6 +75,7 @@ upstream_2kb_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sampl
 # Functions for other processing methods ---------------------------------------------------------------
 
 filtering_snv_genes_interest <- function(snv_dataframe, ids_subset, genes_subset){
+  # Function to filter out genes and patients of interest in a patient by gene matrix. Also converts it to a gene by patient matrix.
   # snv_dataframe: Input your dataframe
   # ids_subset: Input the ids you want to subset
   # genes_subset: Input the genes you want to subset
@@ -84,6 +85,7 @@ filtering_snv_genes_interest <- function(snv_dataframe, ids_subset, genes_subset
   snv_selected_genes_patients_t <- data.frame(t(snv_selected_genes_patients))
   return(snv_selected_genes_patients_t)
 }
+
 
 ## To generate total copy number for each sample, including major and minor DO NOT USE
 # generate_total_cn_mut_load <- function(CNV_dataframe)
@@ -175,6 +177,13 @@ ncTx_exon_selected_genes_interest <- filtering_snv_genes_interest(ncTx_exon_matr
 NMD_selected_genes_interest <- filtering_snv_genes_interest(NMD_matrix, list_ids_tcga_sub_sep, list_genes_selected)
 upstream_2kb_selected_genes_interest <- filtering_snv_genes_interest(upstream_2kb_matrix, list_ids_tcga_sub_sep, list_genes_selected)
 
+## Converting ID separators to -
+rownames(utr3_selected_genes_interest) <- gsub("\\.", "-", rownames(utr3_selected_genes_interest))
+rownames(utr5_selected_genes_interest) <- gsub("\\.", "-", rownames(utr5_selected_genes_interest))
+rownames(high_moderate_selected_genes_interest) <- gsub("\\.", "-", rownames(high_moderate_selected_genes_interest))
+rownames(ncTx_exon_selected_genes_interest) <- gsub("\\.", "-", rownames(ncTx_exon_selected_genes_interest))
+rownames(NMD_selected_genes_interest) <- gsub("\\.", "-", rownames(NMD_selected_genes_interest))
+rownames(upstream_2kb_selected_genes_interest) <- gsub("\\.", "-", rownames(upstream_2kb_selected_genes_interest))
 
 
 # Whole Genome Duplication ------------------------------------------------
@@ -203,6 +212,6 @@ final_dataframe <- merge(final_dataframe, wgd_pcawg_evolution_selected[, c("uuid
 # final_dataframe <- merge(final_dataframe, mut_load_dataframe, by.x = "Row.names", by.y = 'row.names')
 
 # Initial Analysis --------------------------------------------------------
-hist(final_dataframe$age)
-barplot(summary(final_dataframe$Condition))
-barplot(total_cn ~ Row.names, data = final_dataframe, las = 2, axisnames = FALSE)
+# hist(final_dataframe$age)
+# barplot(summary(final_dataframe$Condition))
+# barplot(total_cn ~ Row.names, data = final_dataframe, las = 2, axisnames = FALSE)
