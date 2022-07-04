@@ -63,6 +63,15 @@ pan_cancer_cn_signatures_pcawg_selected <- subset(pan_cancer_cn_signatures_pcawg
 ## Reading whole genome duplication for PCAWG from evolution and heterogeneity
 wgd_pcawg_evolution <- read.table(here::here("data/evolution_and_heterogeneity/2018-07-24-wgdMrcaTiming.txt"), header = TRUE)
 
+## Reading SNV gene level calls
+utr3_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutation_matrix.3UTR.csv"), row.names = 1)
+utr5_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutation_matrix.5UTR.csv"), row.names = 1)
+high_moderate_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutation_matrix.High_and_Moderate.csv"), row.names = 1)
+ncTx_exon_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutation_matrix.ncTx_exon.csv"), row.names = 1)
+NMD_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutation_matrix.NMD.csv"), row.names = 1)
+upstream_skb_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutation_matrix.upstream_2kb.csv"), row.names = 1)
+
+
 # Functions for other processing methods ---------------------------------------------------------------
 
 ## To generate total copy number for each sample, including major and minor DO NOT USE
