@@ -3,6 +3,13 @@
 
 analysis_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
 
-# Overview Statistics -----------------------------------------------------
+## Remove patients with missing data
+analysis_data_na_removed <- analysis_data[complete.cases(analysis_data), ]
 
-## Load the overview statistics of the 40-42 patients here 
+# Summary Statistics -----------------------------------------------------
+## Distribution of sensitive and resistant patients
+barplot(table(analysis_data_na_removed$Condition))
+
+## Age distribution
+summary(analysis_data_na_removed$age)
+plot(density(analysis_data_na_removed$age))
