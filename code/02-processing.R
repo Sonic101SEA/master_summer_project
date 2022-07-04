@@ -41,8 +41,8 @@ CNV_files_list <- lapply(paste0(here::here("data/consensus_cnv/consensus.2017011
 
 ## Reading gene level calls in CNV
 ### CN gene level calls
-cnv_cn_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), 
-                                         fill = TRUE, header = TRUE)
+# cnv_cn_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), 
+#                                         fill = TRUE, header = TRUE)
 
 ### Consensus gene level calls
 cnv_consensus_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_level_calls.by_gene.170214.txt"), 
@@ -224,7 +224,7 @@ colnames(high_moderate_selected_genes_interest) <- paste("mh", colnames(high_mod
 
 ## Merging high and moderate impact variants
 final_dataframe <- merge(final_dataframe, high_moderate_selected_genes_interest,
-                         by.x = "TCGA_id", by.y = "row.names")
+                         by.x = "TCGA_id", by.y = "row.names", all.x = TRUE)
 
 ## Finalising dataframe by making the IDs to row names
 rownames(final_dataframe) <- final_dataframe$tumour_specimen_aliquot_id

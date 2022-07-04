@@ -1,7 +1,7 @@
 
 # Data --------------------------------------------------------------------
 
-
+analysis_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
 
 # Overview Statistics -----------------------------------------------------
 
