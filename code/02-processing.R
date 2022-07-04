@@ -41,8 +41,8 @@ CNV_files_list <- lapply(paste0(here::here("data/consensus_cnv/consensus.2017011
 
 ## Reading gene level calls in CNV
 ### CN gene level calls
-# cnv_cn_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"), 
-#                                         fill = TRUE, header = TRUE)
+cnv_cn_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_CN.by_gene.170214.txt"),
+                                        fill = TRUE, header = TRUE)
 
 ### Consensus gene level calls
 cnv_consensus_gene_level_calls <- read.table(here::here("data/consensus_cnv/gene_level_calls/all_samples.consensus_level_calls.by_gene.170214.txt"), 
@@ -122,7 +122,7 @@ filtering_snv_genes_interest <- function(snv_dataframe, ids_subset, genes_subset
 list_ids_icgc_sub_sep <- gsub("-", "\\.", list_ids_icgc) # This replacement needs to be done due to different patient ID names
 columns_keep_gene_level <- append(list_ids_icgc_sub_sep, c("Gene", "Symbol", "Locus", "ID", "Cytoband"))
 
-## Processing  CN by gene: Subsetting dataframe for patients of interest
+## Processing CN by gene: Subsetting dataframe for patients of interest
 cnv_cn_gene_level_calls_selected <- cnv_cn_gene_level_calls[, grepl(paste(columns_keep_gene_level, collapse = "|"),
                                                         names(cnv_cn_gene_level_calls),)]
 
@@ -227,11 +227,11 @@ final_dataframe <- merge(final_dataframe, high_moderate_selected_genes_interest,
                          by.x = "TCGA_id", by.y = "row.names", all.x = TRUE)
 
 ## Finalising dataframe by making the IDs to row names
-rownames(final_dataframe) <- final_dataframe$tumour_specimen_aliquot_id
-final_dataframe <- subset(final_dataframe, select = -c(tumour_specimen_aliquot_id))
+# rownames(final_dataframe) <- final_dataframe$tumour_specimen_aliquot_id
+# final_dataframe <- subset(final_dataframe, select = -c(tumour_specimen_aliquot_id))
 
 ## Output final dataframe
-# write.csv(final_dataframe, "data/final_dataframe.csv")
+write.csv(final_dataframe, "data/final_dataframe.csv")
 
 # Initial Analysis --------------------------------------------------------
 # hist(final_dataframe$age)
