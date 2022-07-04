@@ -6,7 +6,7 @@ library(tidyr)
 # Data --------------------------------------------------------------------
 ## Reading the IDs of interest
 list_ids_icgc <- scan(here::here("data/ids_of_interest_icgc.txt"), character(), quote = "")
-# list_ids_tcga <- scan(here::here("data/ids_of_interest_tcga.txt"), character(), quote = "")
+list_ids_tcga <- scan(here::here("data/ids_of_interest_tcga.txt"), character(), quote = "")
 
 ## Reading overall data
 id_with_pcawg_overview <- read.csv(here::here("data/id_and_response_with_pcawg_overview.csv"), row.names = 1)
@@ -69,10 +69,21 @@ utr5_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutati
 high_moderate_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutation_matrix.High_and_Moderate.csv"), row.names = 1)
 ncTx_exon_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutation_matrix.ncTx_exon.csv"), row.names = 1)
 NMD_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutation_matrix.NMD.csv"), row.names = 1)
-upstream_skb_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutation_matrix.upstream_2kb.csv"), row.names = 1)
+upstream_2kb_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sample_mutation_matrix.upstream_2kb.csv"), row.names = 1)
 
 
 # Functions for other processing methods ---------------------------------------------------------------
+
+filtering_snv_genes_interest <- function(snv_dataframe, ids_subset, genes_subset){
+  # snv_dataframe: Input your dataframe
+  # ids_subset: Input the ids you want to subset
+  # genes_subset: Input the genes you want to subset
+  snv_selected_patients <- snv_dataframe[, grepl(paste(ids_subset, collapse = "|"),
+                                                 names(snv_dataframe),)]
+  snv_selected_genes_patients <- subset(snv_selected_patients, rownames(snv_selected_patients) %in% genes_subset)
+  snv_selected_genes_patients_t <- data.frame(t(snv_selected_genes_patients))
+  return(snv_selected_genes_patients_t)
+}
 
 ## To generate total copy number for each sample, including major and minor DO NOT USE
 # generate_total_cn_mut_load <- function(CNV_dataframe)
@@ -100,17 +111,17 @@ upstream_skb_matrix <- read.csv(here::here("data/snv_gene_level_calls/gene2sampl
 # rownames(mut_load_dataframe) <- selected_icgc_ids # Adding id rownames
 
 
-# Filtering Gene Level Calls --------------------------------------------------------
+# Filtering Gene Level Calls for CNV data --------------------------------------------------------
 ## Columns to keep
 
-list_ids_icgc_sub_sep <- gsub("-", "\\.", list_ids_icgc)
+list_ids_icgc_sub_sep <- gsub("-", "\\.", list_ids_icgc) # This replacement needs to be done due to different patient ID names
 columns_keep_gene_level <- append(list_ids_icgc_sub_sep, c("Gene", "Symbol", "Locus", "ID", "Cytoband"))
 
 ## Processing  CN by gene: Subsetting dataframe for patients of interest
 cnv_cn_gene_level_calls_selected <- cnv_cn_gene_level_calls[, grepl(paste(columns_keep_gene_level, collapse = "|"),
                                                         names(cnv_cn_gene_level_calls),)]
 
-cnv_cn_gene_level_calls_colnames_corrected <- gsub("\\.", "-", colnames(cnv_cn_gene_level_calls_selected))
+cnv_cn_gene_level_calls_colnames_corrected <- gsub("\\.", "-", colnames(cnv_cn_gene_level_calls_selected)) # Replacement to revert back to original id names
 colnames(cnv_cn_gene_level_calls_selected) <- cnv_cn_gene_level_calls_colnames_corrected
 
 ### Removing unnecessary columns and setting gene as rownames
@@ -149,6 +160,21 @@ calls_by_gene_selected_genes_interest_t <- data.frame(t(calls_by_gene_selected_g
 
 ## Removing X in rownames
 rownames(calls_by_gene_selected_genes_interest_t) <- sub("X*", "", rownames(calls_by_gene_selected_genes_interest_t))
+
+
+
+# Filtering Gene level calls for SNV data ---------------------------------
+list_ids_tcga_sub_sep <- gsub("-", "\\.", list_ids_tcga) # This replacement needs to be done due to different patient ID names
+
+## Subsetting relevant patient ids and genes for SNV data using function
+
+utr3_selected_genes_interest <- filtering_snv_genes_interest(utr3_matrix, list_ids_tcga_sub_sep, list_genes_selected)
+utr5_selected_genes_interest <- filtering_snv_genes_interest(utr5_matrix, list_ids_tcga_sub_sep, list_genes_selected)
+high_moderate_selected_genes_interest <- filtering_snv_genes_interest(high_moderate_matrix, list_ids_tcga_sub_sep, list_genes_selected)
+ncTx_exon_selected_genes_interest <- filtering_snv_genes_interest(ncTx_exon_matrix, list_ids_tcga_sub_sep, list_genes_selected)
+NMD_selected_genes_interest <- filtering_snv_genes_interest(NMD_matrix, list_ids_tcga_sub_sep, list_genes_selected)
+upstream_2kb_selected_genes_interest <- filtering_snv_genes_interest(upstream_2kb_matrix, list_ids_tcga_sub_sep, list_genes_selected)
+
 
 
 # Whole Genome Duplication ------------------------------------------------
