@@ -32,7 +32,8 @@ analysis_data_na_removed %>%
   ggplot(aes(x = name, y = value, fill = Condition)) +
   geom_boxplot() +
   facet_wrap(~ name, scales = "free") +
-  scale_x_discrete(labels = NULL, breaks = NULL) + labs(x = "")
+  scale_x_discrete(labels = NULL, breaks = NULL) + labs(x = "") +
+  labs(title = "Boxplots of copy number signature activity split between the resistant and senstivie groups")
 
 
 ggplot(analysis_data_na_removed, aes(x = CX1))
@@ -50,5 +51,5 @@ analysis_data_na_removed %>%
   geom_bar(position = "dodge", stat = "identity") + 
   geom_text(aes(label=n), position = position_dodge(width = 1), vjust = -1.0) +
   theme_classic() + 
-  labs(title = "Distribution of WGD among resistant and sensitive groups", x = "Condition", y = "No. of patients", fill="WGD event")
+  labs(title = "Distribution of WGD among resistant and sensitive groups", x = "Condition", y = "No. of patients", fill= "WGD event")
 
