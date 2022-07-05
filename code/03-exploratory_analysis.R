@@ -28,7 +28,8 @@ plot(density(analysis_data_na_removed$age))
 
 ## CN
 CN_plot <-
-analysis_data_na_removed %>%
+
+  analysis_data_na_removed %>%
   pivot_longer(5:21) %>%
   ggplot(aes(x = name, y = value, fill = Condition)) +
   geom_boxplot() +
@@ -38,8 +39,8 @@ analysis_data_na_removed %>%
                                        "CX16", "CX17")), scales = "free") +
   scale_x_discrete(labels = NULL, breaks = NULL) +
   scale_fill_brewer(palette = "Pastel1") +
-  labs(title = "Boxplots of copy number signature activity split between the resistant and sensitive groups", x = "", y = "Signature activity")
-
+  labs(title = "Boxplots of copy number signature activity split between the resistant and sensitive groups", 
+       x = "", y = "Signature activity")
 
 # density_cn <- apply(analysis_data_na_removed[, 5:21], 2, density)
 # 
@@ -49,34 +50,51 @@ analysis_data_na_removed %>%
 
 ## WGD
 wgd_plot <-
-analysis_data_na_removed %>%
+
+  analysis_data_na_removed %>%
   count(Condition, WGD) %>%
   ggplot(aes(x = Condition, y = n, fill = WGD)) + 
   geom_bar(position = "dodge", stat = "identity") + 
   geom_text(aes(label=n), position = position_dodge(width = 1), vjust = -1.0) +
   theme_classic() + 
-  labs(title = "Distribution of WGD among resistant and sensitive groups", x = "Condition", y = "No. of patients", fill= "WGD event")
+  labs(title = "Distribution of WGD among resistant and sensitive groups", 
+        x = "Condition", y = "No. of patients", fill= "WGD event")
 
 ## Gene level calls
 
 ### Plotting by condition
 gene_level_calls_plot_by_condition <-
+
   analysis_data_na_removed %>%
   pivot_longer(22:34) %>%
   ggplot(aes(x = value, fill = Condition)) +
   geom_bar(position = position_dodge(preserve = "single")) +
   facet_wrap(~ name, scales = "free") +
+  scale_fill_brewer(palette = "Pastel1") +
   labs(title = "Distribution of gene level calls among resistant and sensitive groups for genes of interest", 
-       x = "Gene copy changes", y = "No. of patients", fill = "Gene level calls")
+        x = "Gene copy changes", y = "No. of patients", fill = "Gene level calls")
 
 ### Plotting by the level calls
 gene_level_calls_plot_by_calls <-
-analysis_data_na_removed %>%
+
+  analysis_data_na_removed %>%
   pivot_longer(22:34) %>%
   ggplot(aes(x = Condition, fill = factor(value, levels = c("-2", "-1", "0", "1", "2")))) +
   geom_bar(position = position_dodge(preserve = "single")) +
   facet_wrap(~ name, scales = "free") +
+  scale_fill_brewer(palette = "Pastel1") +
   labs(title = "Distribution of gene level calls among resistant and sensitive groups for genes of interest", 
-       x = "Gene copy changes", y = "No. of patients", fill = "Gene level calls")
+        x = "Gene copy changes", y = "No. of patients", fill = "Gene level calls")
 
 ## Mutations in genes from SNV data
+
+analysis_data_na_removed %>%
+  pivot_longer(36:39) %>%
+  ggplot(aes(x = factor(value), fill = Condition)) +
+  geom_bar(position = position_dodge(preserve = "single")) +
+  facet_wrap(~name, scales = "free")
+  
+    
+
+
+
