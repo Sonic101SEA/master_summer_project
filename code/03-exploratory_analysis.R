@@ -31,7 +31,10 @@ analysis_data_na_removed %>%
   pivot_longer(5:21) %>%
   ggplot(aes(x = name, y = value, fill = Condition)) +
   geom_boxplot() +
-  facet_wrap(~ name, scales = "free") +
+  facet_wrap(~ factor(name, levels = c("CX1", "CX2", "CX3", "CX4", "CX5", 
+                                       "CX6", "CX7", "CX8", "CX9", "CX10", 
+                                       "CX11", "CX12", "CX13", "CX14", "CX15",
+                                       "CX16", "CX17")), scales = "free") +
   scale_x_discrete(labels = NULL, breaks = NULL) + labs(x = "") +
   labs(title = "Boxplots of copy number signature activity split between the resistant and senstivie groups")
 
