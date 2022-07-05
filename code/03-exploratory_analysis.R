@@ -93,8 +93,13 @@ analysis_data_na_removed %>%
   ggplot(aes(x = factor(value), fill = Condition)) +
   geom_bar(position = position_dodge(preserve = "single")) +
   facet_wrap(~name, scales = "free")
-  
-    
+
+### Without splitting to sensitive and resistant groups
+analysis_data_na_removed %>%
+  pivot_longer(36:39) %>%
+  ggplot(aes(x = factor(value))) +
+  geom_bar(position = position_dodge(preserve = "single")) +
+  facet_wrap(~name, scales = "free")    
 
 
 
