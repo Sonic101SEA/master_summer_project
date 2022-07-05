@@ -37,6 +37,7 @@ analysis_data_na_removed %>%
                                        "CX11", "CX12", "CX13", "CX14", "CX15",
                                        "CX16", "CX17")), scales = "free") +
   scale_x_discrete(labels = NULL, breaks = NULL) +
+  scale_fill_brewer(palette = "Pastel1") +
   labs(title = "Boxplots of copy number signature activity split between the resistant and sensitive groups", x = "", y = "Signature activity")
 
 
@@ -57,5 +58,11 @@ analysis_data_na_removed %>%
   labs(title = "Distribution of WGD among resistant and sensitive groups", x = "Condition", y = "No. of patients", fill= "WGD event")
 
 ## Gene level calls
-
+analysis_data_na_removed %>%
+  pivot_longer(22:34) %>%
+  ggplot(aes(x = value, fill = Condition)) +
+  geom_bar(position = position_dodge(preserve = "single")) +
+  facet_wrap(~ name, scales = "free") +
+  labs(title = "Distribution of gene level calls among resistant and sensitive groups for genes of interest", 
+       x = "Gene copy changes", y = "No. of patients")
 
