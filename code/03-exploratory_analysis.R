@@ -2,7 +2,6 @@
 # Libraries ---------------------------------------------------------------
 
 library(ggplot2)
-library(dplyr)
 library(tidyverse)
 
 # Data --------------------------------------------------------------------
@@ -17,6 +16,7 @@ analysis_data_na_removed <- analysis_data[complete.cases(analysis_data), ]
 
 # Summary Statistics -----------------------------------------------------
 ## Distribution of sensitive and resistant patients
+plat_outcome_plot <-
 barplot(table(analysis_data_na_removed$Condition),
         main = "Distribution of resistant and sensitive patients to platinum therapy",
         ylab = "Frequency")
@@ -27,6 +27,7 @@ hist(analysis_data_na_removed$age, breaks = 10)
 plot(density(analysis_data_na_removed$age))
 
 ## CN
+CN_plot <-
 analysis_data_na_removed %>%
   pivot_longer(5:21) %>%
   ggplot(aes(x = name, y = value, fill = Condition)) +
@@ -35,11 +36,8 @@ analysis_data_na_removed %>%
                                        "CX6", "CX7", "CX8", "CX9", "CX10", 
                                        "CX11", "CX12", "CX13", "CX14", "CX15",
                                        "CX16", "CX17")), scales = "free") +
-  scale_x_discrete(labels = NULL, breaks = NULL) + labs(x = "") +
-  labs(title = "Boxplots of copy number signature activity split between the resistant and senstivie groups")
+  labs(title = "Boxplots of copy number signature activity split between the resistant and sensitive groups", x = "", y = "Signature activity")
 
-
-ggplot(analysis_data_na_removed, aes(x = CX1))
 
 # density_cn <- apply(analysis_data_na_removed[, 5:21], 2, density)
 # 
@@ -48,6 +46,7 @@ ggplot(analysis_data_na_removed, aes(x = CX1))
 # legend("topright", legend=names(density_cn), fill=1:length(density_cn))
 
 ## WGD
+wgd_plot <-
 analysis_data_na_removed %>%
   count(Condition, WGD) %>%
   ggplot(aes(x = Condition, y = n, fill = WGD)) + 
@@ -55,4 +54,7 @@ analysis_data_na_removed %>%
   geom_text(aes(label=n), position = position_dodge(width = 1), vjust = -1.0) +
   theme_classic() + 
   labs(title = "Distribution of WGD among resistant and sensitive groups", x = "Condition", y = "No. of patients", fill= "WGD event")
+
+## Gene level calls
+
 
