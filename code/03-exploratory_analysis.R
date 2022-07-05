@@ -58,11 +58,22 @@ analysis_data_na_removed %>%
   labs(title = "Distribution of WGD among resistant and sensitive groups", x = "Condition", y = "No. of patients", fill= "WGD event")
 
 ## Gene level calls
-analysis_data_na_removed %>%
+gene_level_calls_plot_by_condition <-
+  analysis_data_na_removed %>%
   pivot_longer(22:34) %>%
   ggplot(aes(x = value, fill = Condition)) +
   geom_bar(position = position_dodge(preserve = "single")) +
   facet_wrap(~ name, scales = "free") +
   labs(title = "Distribution of gene level calls among resistant and sensitive groups for genes of interest", 
-       x = "Gene copy changes", y = "No. of patients")
+       x = "Gene copy changes", y = "No. of patients", fill = "Gene level calls")
 
+gene_level_calls_plot_by_calls <-
+analysis_data_na_removed %>%
+  pivot_longer(22:34) %>%
+  ggplot(aes(x = Condition, fill = factor(value, levels = c("-2", "-1", "0", "1", "2")))) +
+  geom_bar(position = position_dodge(preserve = "single")) +
+  facet_wrap(~ name, scales = "free") +
+  labs(title = "Distribution of gene level calls among resistant and sensitive groups for genes of interest", 
+       x = "Gene copy changes", y = "No. of patients", fill = "Gene level calls")
+
+## Mutations in genes from SNV data
