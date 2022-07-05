@@ -3,6 +3,7 @@
 
 library(ggplot2)
 library(dplyr)
+library(tidyverse)
 
 # Data --------------------------------------------------------------------
 
@@ -26,6 +27,16 @@ hist(analysis_data_na_removed$age, breaks = 10)
 plot(density(analysis_data_na_removed$age))
 
 ## CN
+analysis_data_na_removed %>%
+  pivot_longer(5:21) %>%
+  ggplot(aes(x = name, y = value, fill = Condition)) +
+  geom_boxplot() +
+  facet_wrap(~ name, scales = "free") +
+  scale_x_discrete(labels = NULL, breaks = NULL) + labs(x = "")
+
+
+ggplot(analysis_data_na_removed, aes(x = CX1))
+
 # density_cn <- apply(analysis_data_na_removed[, 5:21], 2, density)
 # 
 # plot(NA, xlim=range(sapply(density_cn, "[", "x")), ylim=range(sapply(density_cn, "[", "y")))
