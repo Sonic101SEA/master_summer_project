@@ -5,8 +5,6 @@ library(ggplot2)
 library(tidyverse)
 library(table1)
 library(tableone)
-library(R2HTML)
-library(papaja)
 # Data --------------------------------------------------------------------
 
 analysis_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
