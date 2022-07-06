@@ -5,6 +5,8 @@ library(ggplot2)
 library(tidyverse)
 library(table1)
 library(tableone)
+library(R2HTML)
+library(papaja)
 # Data --------------------------------------------------------------------
 
 analysis_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
@@ -41,9 +43,11 @@ table1_dataframe[c("BARD1", "FAM175A", "NBN", "MRE11A",
 
 label(table1_dataframe$age) <- "Age"
 
-table1(~ age + CX1 + CX2 + CX3 + CX4 + CX5 + CX6 + CX7 + CX8 + CX9 + CX10 + CX11 + CX12 + CX13 +
+table1_descriptive_statistics <- 
+  table1(~ age + CX1 + CX2 + CX3 + CX4 + CX5 + CX6 + CX7 + CX8 + CX9 + CX10 + CX11 + CX12 + CX13 +
          CX14 + CX15 + CX16 + CX17 + BARD1 + FAM175A + NBN + MRE11A + ATM + CHEK1 + BRCA2 + PALB2 + RAD51D + 
          BRCA1 + RAD51C + BRIP1 + CHEK2 + WGD + mhBRCA1 + mhBRCA2 + mhCHEK2 + mhPALB2 | Condition, data = table1_dataframe, overall = "Total")
+
 
 ## Using tableone
 ## Vector of variables to summarise
