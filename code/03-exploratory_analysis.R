@@ -17,7 +17,35 @@ analysis_data_na_removed <- analysis_data[complete.cases(analysis_data), ]
 
 
 # Table One Summary -------------------------------------------------------
+## Using Table1
+table1_dataframe <- analysis_data_na_removed
 
+levels_in_data_snv <- c(0, 1)
+labels_for_data_snv <- c("Mutation not present", "Mutation present")
+
+levels_in_data_gene_level <- c(-2, -1, 0, 1, 2)
+labels_for_data_gene_level <- c("Two copy loss", "One copy loss", "No change", "One copy gain", "Two copy gain")
+
+changing_labels <- function(data, levels_input, labels_input){
+  data = factor(data, levels = levels_input, labels = labels_input)
+}
+
+table1_dataframe[c("mhBRCA1", "mhBRCA2", "mhCHEK2", "mhPALB2")] <- lapply(table1_dataframe[c("mhBRCA1", "mhBRCA2", "mhCHEK2", "mhPALB2")], 
+                                                                          changing_labels, levels_in_data_snv, labels_for_data_snv)
+table1_dataframe[c("BARD1", "FAM175A", "NBN", "MRE11A", 
+                   "ATM", "CHEK1", "BRCA2", "PALB2", "RAD51D", 
+                   "BRCA1", "RAD51C", "BRIP1", "CHEK2")] <- lapply(table1_dataframe[c("BARD1", "FAM175A", "NBN", "MRE11A", 
+                                                                                      "ATM", "CHEK1", "BRCA2", "PALB2", "RAD51D", 
+                                                                                      "BRCA1", "RAD51C", "BRIP1", "CHEK2")], 
+                                                                   changing_labels, levels_in_data_gene_level, labels_for_data_gene_level) 
+
+label(table1_dataframe$age) <- "Age"
+
+table1(~ age + CX1 + CX2 + CX3 + CX4 + CX5 + CX6 + CX7 + CX8 + CX9 + CX10 + CX11 + CX12 + CX13 +
+         CX14 + CX15 + CX16 + CX17 + BARD1 + FAM175A + NBN + MRE11A + ATM + CHEK1 + BRCA2 + PALB2 + RAD51D + 
+         BRCA1 + RAD51C + BRIP1 + CHEK2 + WGD + mhBRCA1 + mhBRCA2 + mhCHEK2 + mhPALB2 | Condition, data = table1_dataframe, overall = "Total")
+
+## Using tableone
 ## Vector of variables to summarise
 vars_summarise <- c("Condition", "age", "CX1", "CX2", "CX3", "CX4", "CX5", "CX6", "CX7", "CX8", "CX9", "CX10", "CX11",
                     "CX12", "CX13", "CX14", "CX15", "CX16", "CX17", "WGD", "BARD1", "FAM175A", "NBN", "MRE11A", "ATM", "CHEK1", 
@@ -52,7 +80,6 @@ ggsave(here::here("graphs/plat_outcome_distribution.png"), plat_outcome_plot)
   geom_boxplot(width = 0.1) +
   xlim(25, 100) +
   coord_flip()
-
 
 summary(analysis_data_na_removed$age)
 hist(analysis_data_na_removed$age, breaks = 10)
