@@ -46,11 +46,36 @@ plat_outcome_plot <-
 ggsave(here::here("graphs/plat_outcome_distribution.png"), plat_outcome_plot)
 
 ## Age distribution
+
+  analysis_data_na_removed %>%
+  ggplot(aes(x = age)) +
+  geom_boxplot(width = 0.1) +
+  xlim(25, 100) +
+  coord_flip()
+
+
 summary(analysis_data_na_removed$age)
 hist(analysis_data_na_removed$age, breaks = 10)
 plot(density(analysis_data_na_removed$age))
 
 ## CN
+
+### Non-stratified same scale
+
+CN_non_stratified_plot_same_scale <-
+  
+  analysis_data_na_removed %>%
+  pivot_longer(5:21) %>%
+  mutate(name_reorder = factor(name, levels = c("CX1", "CX2", "CX3", "CX4", "CX5",
+                                                "CX6", "CX7", "CX8", "CX9", "CX10",
+                                                "CX11", "CX12", "CX13", "CX14", "CX15",
+                                                "CX16", "CX17"))) %>%
+  ggplot(aes(x = reorder(name_reorder, value), y = value)) + # Reordering by mean values
+  geom_boxplot() +
+  labs(title = "Boxplots of copy number signature activity ordered by mean values on same scale", 
+       x = "", y = "Signature activity", colour = "Copy Number")
+
+ggsave(here::here("graphs/cn_activity_non_stratified_distribution_same_scale.png"), CN_non_stratified_plot_same_scale)
 
 ### Non-stratified
 
@@ -71,6 +96,20 @@ CN_non_stratified_plot <-
 #### Output of plot
 ggsave(here::here("graphs/cn_activity_non_stratified_distribution.png"), CN_non_stratified_plot)
 
+### Stratified by therapy outcome on same scale
+
+CN_stratified_plot_same_scale <-
+  
+  analysis_data_na_removed %>%
+  pivot_longer(5:21) %>%
+  ggplot(aes(x = reorder(name, value), y = value, fill = Condition)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(title = "Copy number signature activity split between resistant and sensitive groups on same scale", 
+       x = "", y = "Signature activity")
+
+ggsave(here::here("graphs/cn_activity_stratified_distribution_same_scale.png"), CN_stratified_plot_same_scale)
+
 ### Stratified by therapy outcome
 CN_stratified_plot <-
 
@@ -84,7 +123,7 @@ CN_stratified_plot <-
                                        "CX16", "CX17")), scales = "free") +
   scale_x_discrete(labels = NULL, breaks = NULL) +
   scale_fill_brewer(palette = "Pastel1") +
-  labs(title = "Boxplots of copy number signature activity split between the resistant and sensitive groups", 
+  labs(title = "Boxplots of copy number signature activity split between resistant and sensitive groups", 
        x = "", y = "Signature activity")
 
 #### Output of plot
@@ -137,9 +176,10 @@ gene_level_calls_plot_non_strat <-
   
   analysis_data_na_removed %>%
   pivot_longer(22:34) %>%
-  ggplot(aes(x = value)) +
+  ggplot(aes(x = factor(value))) +
   geom_bar(position = position_dodge(preserve = "single")) +
   facet_wrap(~ name, scales = "free") +
+  scale_x_discrete(drop = FALSE) +
   labs(title = "Distribution of gene level calls among patients for genes of interest", 
        x = "Gene copy changes", y = "No. of patients", fill = "Gene level calls")
 
@@ -151,9 +191,10 @@ gene_level_calls_plot_strat <-
 
   analysis_data_na_removed %>%
   pivot_longer(22:34) %>%
-  ggplot(aes(x = value, fill = Condition)) +
+  ggplot(aes(x = factor(value), fill = Condition)) +
   geom_bar(position = position_dodge(preserve = "single")) +
   facet_wrap(~ name, scales = "free") +
+  scale_x_discrete(drop = FALSE) +
   scale_fill_brewer(palette = "Pastel1") +
   labs(title = "Distribution of gene level calls among resistant and sensitive groups for genes of interest", 
         x = "Gene copy changes", y = "No. of patients", fill = "Gene level calls")
