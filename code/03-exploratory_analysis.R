@@ -101,7 +101,7 @@ CN_non_stratified_plot_same_scale <-
                                                 "CX16", "CX17"))) %>%
   ggplot(aes(x = reorder(name_reorder, value), y = value)) + # Reordering by mean values
   geom_boxplot() +
-  labs(title = "Boxplots of copy number signature activity ordered by mean values on same scale", 
+  labs(title = "Copy number signature activity ordered by mean values", 
        x = "", y = "Signature activity", colour = "Copy Number")
 
 ggsave(here::here("graphs/cn_activity_non_stratified_distribution_same_scale.png"), CN_non_stratified_plot_same_scale)
@@ -125,6 +125,11 @@ CN_non_stratified_plot <-
 #### Output of plot
 ggsave(here::here("graphs/cn_activity_non_stratified_distribution.png"), CN_non_stratified_plot)
 
+cn_signatures_non_strat_figure <- ggarrange(CN_non_stratified_plot, CN_non_stratified_plot_same_scale,
+                                  labels = c("A", "B"),
+                                  ncol = 2, nrow = 1)
+
+ggsave(here::here("graphs/cn_non_stratified_figure.png"), cn_signatures_non_strat_figure, limitsize = TRUE)
 ### Stratified by therapy outcome on same scale
 
 CN_stratified_plot_same_scale <-
@@ -187,12 +192,12 @@ wgd_plot_strat <-
 
   analysis_data_na_removed %>%
   count(Condition, WGD) %>%
-  ggplot(aes(x = Condition, y = n, fill = WGD)) + 
+  ggplot(aes(x = WGD, y = n, fill = Condition)) + 
   geom_bar(position = "dodge", stat = "identity") + 
   geom_text(aes(label=n), position = position_dodge(width = 1), vjust = -1.0) +
-  scale_fill_discrete(labels = c("No", "Yes")) + 
-  labs(title = "Distribution of WGD among resistant and sensitive groups", 
-        x = "Condition", y = "No. of patients", fill= "WGD event")
+  scale_x_discrete(labels = c("No", "Yes")) +
+  labs(title = "Distribution of WGD among resistant and sensitive groups",
+        x = "Presence of WGD", y = "No. of patients", fill= "Condition")
 
 #### Output plot
 ggsave(here::here("graphs/wgd_distribution_stratified.png"), wgd_plot_strat)
