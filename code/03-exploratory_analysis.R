@@ -49,18 +49,18 @@ table1_descriptive_statistics <-
 
 ## Using tableone
 ## Vector of variables to summarise
-vars_summarise <- c("Condition", "age", "CX1", "CX2", "CX3", "CX4", "CX5", "CX6", "CX7", "CX8", "CX9", "CX10", "CX11",
-                    "CX12", "CX13", "CX14", "CX15", "CX16", "CX17", "WGD", "BARD1", "FAM175A", "NBN", "MRE11A", "ATM", "CHEK1", 
-                    "BRCA2", "PALB2", "RAD51D", "BRCA1", "RAD51C", "BRIP1", "CHEK2",
-                    "mhBRCA1", "mhBRCA2", "mhCHEK2", "mhPALB2")
-
-## Vector of categorical variables that need factoring
-
-vars_cat <- c("BARD1", "FAM175A", "NBN", "MRE11A", "ATM", "CHEK1", 
-              "BRCA2", "PALB2", "RAD51D", "BRCA1", "RAD51C", "BRIP1", "CHEK2",
-              "mhBRCA1", "mhBRCA2", "mhCHEK2", "mhPALB2")
-
-CreateTableOne(vars = vars_summarise, factorVars = vars_cat, data = analysis_data_na_removed, strata = "Condition")
+# vars_summarise <- c("Condition", "age", "CX1", "CX2", "CX3", "CX4", "CX5", "CX6", "CX7", "CX8", "CX9", "CX10", "CX11",
+#                     "CX12", "CX13", "CX14", "CX15", "CX16", "CX17", "WGD", "BARD1", "FAM175A", "NBN", "MRE11A", "ATM", "CHEK1", 
+#                     "BRCA2", "PALB2", "RAD51D", "BRCA1", "RAD51C", "BRIP1", "CHEK2",
+#                     "mhBRCA1", "mhBRCA2", "mhCHEK2", "mhPALB2")
+# 
+# ## Vector of categorical variables that need factoring
+# 
+# vars_cat <- c("BARD1", "FAM175A", "NBN", "MRE11A", "ATM", "CHEK1", 
+#               "BRCA2", "PALB2", "RAD51D", "BRCA1", "RAD51C", "BRIP1", "CHEK2",
+#               "mhBRCA1", "mhBRCA2", "mhCHEK2", "mhPALB2")
+# 
+# CreateTableOne(vars = vars_summarise, factorVars = vars_cat, data = analysis_data_na_removed, strata = "Condition")
 
 # Summary Statistics -----------------------------------------------------
 ## Distribution of sensitive and resistant patients
