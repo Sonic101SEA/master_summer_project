@@ -5,6 +5,7 @@ library(ggplot2)
 library(tidyverse)
 library(table1)
 library(tableone)
+library(ggpubr)
 # Data --------------------------------------------------------------------
 
 analysis_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
@@ -73,19 +74,19 @@ plat_outcome_plot <-
   labs(title = "Distribution of resistant and sensitive patients",
        x = "Condition", y = "No. of patients")
 
-ggsave(here::here("graphs/plat_outcome_distribution.png"), plat_outcome_plot)
+ggsave(here::here("graphs/exploratory/plat_outcome_distribution.pdf"), plat_outcome_plot)
 
-## Age distribution
-
-  analysis_data_na_removed %>%
-  ggplot(aes(x = age)) +
-  geom_boxplot(width = 0.1) +
-  xlim(25, 100) +
-  coord_flip()
-
-summary(analysis_data_na_removed$age)
-hist(analysis_data_na_removed$age, breaks = 10)
-plot(density(analysis_data_na_removed$age))
+# ## Age distribution
+# 
+#   analysis_data_na_removed %>%
+#   ggplot(aes(x = age)) +
+#   geom_boxplot(width = 0.1) +
+#   xlim(25, 100) +
+#   coord_flip()
+# 
+# summary(analysis_data_na_removed$age)
+# hist(analysis_data_na_removed$age, breaks = 10)
+# plot(density(analysis_data_na_removed$age))
 
 ## CN
 
@@ -99,12 +100,12 @@ CN_non_stratified_plot_same_scale <-
                                                 "CX6", "CX7", "CX8", "CX9", "CX10",
                                                 "CX11", "CX12", "CX13", "CX14", "CX15",
                                                 "CX16", "CX17"))) %>%
-  ggplot(aes(x = reorder(name_reorder, value), y = value)) + # Reordering by mean values
+  ggplot(aes(x = reorder(name_reorder, value, median), y = value)) + # Reordering by median values
   geom_boxplot() +
   labs(title = "Copy number signature activity ordered by mean values", 
        x = "", y = "Signature activity", colour = "Copy Number")
 
-ggsave(here::here("graphs/cn_activity_non_stratified_distribution_same_scale.png"), CN_non_stratified_plot_same_scale)
+ggsave(here::here("graphs/exploratory/cn_activity_non_stratified_distribution_same_scale.pdf"), CN_non_stratified_plot_same_scale)
 
 ### Non-stratified
 
@@ -123,26 +124,26 @@ CN_non_stratified_plot <-
        x = "", y = "Signature activity")
 
 #### Output of plot
-ggsave(here::here("graphs/cn_activity_non_stratified_distribution.png"), CN_non_stratified_plot)
+ggsave(here::here("graphs/exploratory/cn_activity_non_stratified_distribution.pdf"), CN_non_stratified_plot)
 
 cn_signatures_non_strat_figure <- ggarrange(CN_non_stratified_plot, CN_non_stratified_plot_same_scale,
                                   labels = c("A", "B"),
                                   ncol = 2, nrow = 1)
 
-ggsave(here::here("graphs/cn_non_stratified_figure.png"), cn_signatures_non_strat_figure, limitsize = TRUE)
+ggsave(here::here("graphs/exploratory/cn_non_stratified_figure.pdf"), cn_signatures_non_strat_figure, limitsize = TRUE)
 ### Stratified by therapy outcome on same scale
 
 CN_stratified_plot_same_scale <-
   
   analysis_data_na_removed %>%
   pivot_longer(5:21) %>%
-  ggplot(aes(x = reorder(name, value), y = value, fill = Condition)) +
+  ggplot(aes(x = reorder(name, value, median), y = value, fill = Condition)) +
   geom_boxplot() +
   scale_fill_brewer(palette = "Pastel1") +
   labs(title = "Copy number signature activity split between resistant and sensitive groups on same scale", 
        x = "", y = "Signature activity")
 
-ggsave(here::here("graphs/cn_activity_stratified_distribution_same_scale.png"), CN_stratified_plot_same_scale)
+ggsave(here::here("graphs/exploratory/cn_activity_stratified_distribution_same_scale.pdf"), CN_stratified_plot_same_scale)
 
 ### Stratified by therapy outcome
 CN_stratified_plot <-
@@ -161,7 +162,7 @@ CN_stratified_plot <-
        x = "", y = "Signature activity")
 
 #### Output of plot
-ggsave(here::here("graphs/cn_activity_stratified_distribution.png"), CN_stratified_plot)
+ggsave(here::here("graphs/exploratory/cn_activity_stratified_distribution.pdf"), CN_stratified_plot)
 
 # density_cn <- apply(analysis_data_na_removed[, 5:21], 2, density)
 # 
@@ -185,7 +186,7 @@ wgd_plot_non_strat <-
        x = "Presence of WGD", y = "No. of patients")
 
 #### Output plot
-ggsave(here::here("graphs/wgd_distribution_non_stratified.png"), wgd_plot_non_strat)
+ggsave(here::here("graphs/exploratory/wgd_distribution_non_stratified.pdf"), wgd_plot_non_strat)
 
 ### Plotting by condition stratified
 wgd_plot_strat <-
@@ -200,7 +201,7 @@ wgd_plot_strat <-
         x = "Presence of WGD", y = "No. of patients", fill= "Condition")
 
 #### Output plot
-ggsave(here::here("graphs/wgd_distribution_stratified.png"), wgd_plot_strat)
+ggsave(here::here("graphs/exploratory/wgd_distribution_stratified.pdf"), wgd_plot_strat)
 
 ## Gene level calls
 
@@ -218,7 +219,7 @@ gene_level_calls_plot_non_strat <-
        x = "Gene copy changes", y = "No. of patients", fill = "Gene level calls")
 
 #### Output plot
-ggsave(here::here("graphs/gene_level_calls_distribution_non_stratified.png"), gene_level_calls_plot_non_strat)
+ggsave(here::here("graphs/exploratory/gene_level_calls_distribution_non_stratified.pdf"), gene_level_calls_plot_non_strat)
 
 ### Plotting by condition stratified
 gene_level_calls_plot_strat <-
@@ -234,7 +235,7 @@ gene_level_calls_plot_strat <-
         x = "Gene copy changes", y = "No. of patients", fill = "Gene level calls")
 
 #### Output plot
-ggsave(here::here("graphs/gene_level_calls_distribution_stratified.png"), gene_level_calls_plot_strat)
+ggsave(here::here("graphs/exploratory/gene_level_calls_distribution_stratified.pdf"), gene_level_calls_plot_strat)
 
 ### Plotting by the level calls stratified by therapy outcome
 gene_level_calls_plot_by_calls <-
@@ -249,7 +250,7 @@ gene_level_calls_plot_by_calls <-
         x = "Gene copy changes", y = "No. of patients", fill = "Gene level calls")
 
 #### Output plot
-ggsave(here::here("graphs/gene_level_calls_distribution_stratified_by_level_calls.png"), gene_level_calls_plot_by_calls)
+ggsave(here::here("graphs/exploratory/gene_level_calls_distribution_stratified_by_level_calls.pdf"), gene_level_calls_plot_by_calls)
 
 ## Mutations in genes from SNV data
 
@@ -265,7 +266,7 @@ mutations_genes_snv_plot_strat <-
        x = "Presence of mutation", y = "No. of patients")
 
 #### Output plot
-ggsave(here::here("graphs/mutations_genes_snv_stratified.png"), mutations_genes_snv_plot_strat)
+ggsave(here::here("graphs/exploratory/mutations_genes_snv_stratified.pdf"), mutations_genes_snv_plot_strat)
 
 ### Without splitting to sensitive and resistant groups
 mutations_genes_snv_plot_non_strat <-
@@ -280,6 +281,6 @@ mutations_genes_snv_plot_non_strat <-
        x = "Presence of mutation", y = "No. of patients")
 
 #### Output plot
-ggsave(here::here("graphs/mutations_genes_snv_non_stratified.png"), mutations_genes_snv_plot_non_strat)
+ggsave(here::here("graphs/exploratory/mutations_genes_snv_non_stratified.pdf"), mutations_genes_snv_plot_non_strat)
 
 
