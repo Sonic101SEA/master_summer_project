@@ -13,14 +13,14 @@ columns_to_remove <- c('CX6', 'CX8', 'CX13', 'CX17', 'mhBRCA1', 'mhCHEK2', 'mhPA
 final_modelling_data <- modelling_data_removed_na[, !(names(modelling_data_removed_na) %in% columns_to_remove)]
 
 ## Factorising columns
-columns_to_factorise <- c('BARD1', 'FAM175A', 'NBN', 'MRE11A', 'ATM', 'CHEK1', 'BRCA2', 'PALB2', 'RAD51D', 'BRCA1', 'RAD51C', 'BRIP1', 'CHEK2', 'WGD', 'mhBRCA2')
-final_modelling_data[columns_to_factorise] <- lapply(final_modelling_data[columns_to_factorise], factor)
-
+columns_to_factorise <- c('BARD1', 'FAM175A', 'NBN', 'MRE11A', 'ATM', 'CHEK1', 'BRCA2', 'PALB2', 'RAD51D', 'BRCA1', 'RAD51C', 'BRIP1', 'CHEK2')
+final_modelling_data[columns_to_factorise] <- lapply(final_modelling_data[columns_to_factorise], factor, levels = c("0", "-2", "-1", "1", "2"))
+final_modelling_data$mhBRCA2 <- factor(final_modelling_data$mhBRCA2)
 # Functions ---------------------------------------------------------------
 
 logistic_regression <- function(variable){
   model <- glm(as.formula("Condition ~ " %+% variable), data = final_modelling_data, family = binomial(link = logit))
-  summary(model)
+  model_summary <- list(summary(model))
 }
 
 "%+%" <- function(x,y) paste(x, y, sep = "")
