@@ -12,21 +12,23 @@ modelling_data_removed_na<- modelling_data[complete.cases(modelling_data), ]
 columns_to_remove <- c('CX6', 'CX8', 'CX13', 'CX17', 'mhBRCA1', 'mhCHEK2', 'mhPALB2')
 final_modelling_data <- modelling_data_removed_na[, !(names(modelling_data_removed_na) %in% columns_to_remove)]
 
+## Factorising columns
+columns_to_factorise <- c('BARD1', 'FAM175A', 'NBN', 'MRE11A', 'ATM', 'CHEK1', 'BRCA2', 'PALB2', 'RAD51D', 'BRCA1', 'RAD51C', 'BRIP1', 'CHEK2', 'WGD', 'mhBRCA2')
+final_modelling_data[columns_to_factorise] <- lapply(final_modelling_data[columns_to_factorise], factor)
 
 # Functions ---------------------------------------------------------------
 
-logistic_regression <- function(outcome, variable){
-  model <- glm(outcome ~ variable, family = binomial(link = 'logit'))
- # summary(model)$coefficients[2]
-  
+logistic_regression <- function(variable){
+  model <- glm(as.formula("Condition ~ " %+% variable), data = final_modelling_data, family = binomial(link = logit))
+  summary(model)
 }
 
+"%+%" <- function(x,y) paste(x, y, sep = "")
 
 # Analysis ----------------------------------------------------------------
-set.seed(1)
+# Model for one variable
+model_test <- glm(Condition ~ BRCA2, family = binomial(link = 'logit'), data = final_modelling_data)
 
-model_test <- glm(Condition ~ CX1, family = binomial(link = 'logit'), data = final_modelling_data)
-
-for (i in 4:ncol(final_modelling_data)){
-  model <- glm(final_modelling_data[, 'Condition'] ~ final_modelling_data[, i], family = binomial(link = 'logit'))
-}
+# Model loop through all the variables
+predictors <- colnames(final_modelling_data[4:ncol(final_modelling_data)])
+lapply(predictors, logistic_regression)
