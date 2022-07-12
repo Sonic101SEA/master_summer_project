@@ -19,10 +19,12 @@ final_modelling_data$mhBRCA2 <- factor(final_modelling_data$mhBRCA2)
 # Functions ---------------------------------------------------------------
 
 logistic_regression <- function(variable){
+  # To conduct logistic regressions based on the variable names given to it for final_modelling_data
   model <- glm(as.formula("Condition ~ " %+% variable), data = final_modelling_data, family = binomial(link = logit))
   model_summary <- list(summary(model))
 }
 
+# Function to paste variable name 
 "%+%" <- function(x,y) paste(x, y, sep = "")
 
 # Analysis ----------------------------------------------------------------
