@@ -37,7 +37,13 @@ predictors <- colnames(final_modelling_data[4:ncol(final_modelling_data)])
 model_multiple <- lapply(predictors, logistic_regression, final_modelling_data) # Applying multiple logistic regressions on each variable
 
 ## Extracting p-values and coefficients
-results <- map_df(model_multiple, tidy, .id = 'formula') # Extracting results directly from the model, not the summary
+results <- map_df(model_multiple, tidy) # Extracting results directly from the model, not the summary
 
-# Model for all variables in one model
+## Changing coefficients to odds ratio
+results$estimate_odds <- exp(results$estimate)
+
+## Output model results
+# write.csv(results, "graphs/analysis/univariate_results.csv")
+
+# Model for all variables in one model (Do not use)
 model_all <- glm(reformulate(paste(predictors, sep = ""), "Condition"), family = binomial(link = 'logit'), data = final_modelling_data)
