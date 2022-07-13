@@ -43,7 +43,7 @@ results <- map_df(model_multiple, tidy) # Extracting results directly from the m
 results$estimate_odds <- exp(results$estimate)
 
 ## Output model results
-# write.csv(results, "graphs/analysis/univariate_results.csv")
+# write.csv(results, here::here("data/univariate_results/univariate_results.csv"))
 
 # Model for all variables in one model (Do not use)
 model_all <- glm(reformulate(paste(predictors, sep = ""), "Condition"), family = binomial(link = 'logit'), data = final_modelling_data)
