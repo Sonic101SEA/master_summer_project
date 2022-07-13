@@ -47,3 +47,6 @@ results$estimate_odds <- exp(results$estimate)
 
 # Model for all variables in one model (Do not use)
 model_all <- glm(reformulate(paste(predictors, sep = ""), "Condition"), family = binomial(link = 'logit'), data = final_modelling_data)
+
+
+
