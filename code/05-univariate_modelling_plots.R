@@ -4,6 +4,7 @@
 library(ggplot2)
 library(dplyr)
 library(ggrepel)
+library(ggpubr)
 
 # Data --------------------------------------------------------------------
 
@@ -68,28 +69,48 @@ univariate_results_15percent$label_name[univariate_results_15percent$effect_dire
 
 # Plotting ----------------------------------------------------------------
 # Plotting a volcano plot, with positive variables labelled for 5% significance
-univariate_results_rm_interecept %>%
-  ggplot(aes(x = estimate, y = -log10(p.value), col = effect_direction, label = label_name)) +
-  geom_point() +
-  geom_hline(yintercept = -log10(0.05), col = "red") +
-  geom_vline(xintercept = 0, linetype = "dotted") +
-  coord_cartesian(xlim = c(-30, 30)) +
-  geom_text_repel()
+
+percent5_plot <- 
+  univariate_results_rm_interecept %>%
+    ggplot(aes(x = estimate, y = -log10(p.value), col = effect_direction, label = label_name)) +
+    geom_point() +
+    geom_hline(yintercept = -log10(0.05), col = "red") +
+    geom_vline(xintercept = 0, linetype = "dotted") +
+    coord_cartesian(xlim = c(-30, 30)) +
+    scale_colour_manual(values = c("black", "blue", "red")) +
+    geom_text_repel() +
+    labs(title = "5% significance threshold")
+
+ggsave(here::here("graphs/analysis/univariate_5significance_plot.pdf"), percent5_plot)
 
 # For 10% significance
-univariate_results_10percent %>%
-  ggplot(aes(x = estimate, y = -log10(p.value), col = effect_direction, label = label_name)) +
-  geom_point() +
-  geom_hline(yintercept = -log10(0.10), col = "red") +
-  geom_vline(xintercept = 0, linetype = "dotted") +
-  coord_cartesian(xlim = c(-30, 30)) +
-  geom_text_repel()
+percent10_plot <-
+  univariate_results_10percent %>%
+    ggplot(aes(x = estimate, y = -log10(p.value), col = effect_direction, label = label_name)) +
+    geom_point() +
+    geom_hline(yintercept = -log10(0.10), col = "red") +
+    geom_vline(xintercept = 0, linetype = "dotted") +
+    coord_cartesian(xlim = c(-30, 30)) +
+    scale_colour_manual(values = c("black", "blue", "red")) +
+    geom_text_repel() +
+    labs(title = "10% significance threshold")
+ggsave(here::here("graphs/analysis/univariate_10significance_plot.pdf"), percent10_plot)
 
 # For 15% significance
-univariate_results_15percent %>%
-  ggplot(aes(x = estimate, y = -log10(p.value), col = effect_direction, label = label_name)) +
-  geom_point() +
-  geom_hline(yintercept = -log10(0.15), col = "red") +
-  geom_vline(xintercept = 0, linetype = "dotted") +
-  coord_cartesian(xlim = c(-30, 30)) +
-  geom_text_repel()
+percent15_plot <-
+  univariate_results_15percent %>%
+    ggplot(aes(x = estimate, y = -log10(p.value), col = effect_direction, label = label_name)) +
+    geom_point() +
+    geom_hline(yintercept = -log10(0.15), col = "red") +
+    geom_vline(xintercept = 0, linetype = "dotted") +
+    coord_cartesian(xlim = c(-30, 30)) +
+    scale_colour_manual(values = c("black", "red", "blue")) +
+    geom_text_repel() +
+    labs(title = "15% significance threshold")
+ggsave(here::here("graphs/analysis/univariate_15significance_plot.pdf"), percent15_plot)
+
+# Significance plots together
+univariate_significance_plots <- ggarrange(percent5_plot, percent10_plot, percent15_plot,
+                                           labels = c("A", "B", "C"),
+                                           ncol = 2, nrow = 2)
+ggsave(here::here("graphs/analysis/univariate_significance_plots_combined.pdf"), univariate_significance_plots)
