@@ -20,11 +20,11 @@ univariate_results_rm_interecept$effect_direction <- "Insignificant"
 
 ## if estimate_odds > 1 and pvalue  < 0.05, set as "positive"
 univariate_results_rm_interecept$effect_direction[univariate_results_rm_interecept$estimate_odds > 1 &
-                                                    univariate_results_rm_interecept$p.value < 0.05] <- "Positive"
+                                                    univariate_results_rm_interecept$p.value < 0.05] <- "Predictive of resistance"
 
 ## if estimate_odds < 1 and pvalue < 0.05, set as "negative"
 univariate_results_rm_interecept$effect_direction[univariate_results_rm_interecept$estimate_odds < 1 &
-                                                    univariate_results_rm_interecept$p.value < 0.05] <- "Negative"
+                                                    univariate_results_rm_interecept$p.value < 0.05] <- "Predictive of sensitivity"
 
 ## Setting labels for significant values
 univariate_results_rm_interecept$label_name <- NA
@@ -38,11 +38,11 @@ univariate_results_10percent$effect_direction <- "Insignificant"
 
 ## if estimate_odds > 1 and pvalue  < 0.05, set as "positive"
 univariate_results_10percent$effect_direction[univariate_results_10percent$estimate_odds > 1 &
-                                                    univariate_results_10percent$p.value < 0.10] <- "Positive"
+                                                    univariate_results_10percent$p.value < 0.10] <- "Predictive of resistance"
 
 ## if estimate_odds < 1 and pvalue < 0.05, set as "negative"
 univariate_results_10percent$effect_direction[univariate_results_10percent$estimate_odds < 1 &
-                                                    univariate_results_10percent$p.value < 0.10] <- "Negative"
+                                                    univariate_results_10percent$p.value < 0.10] <- "Predictive of sensitivity"
 
 ## Setting labels for significant values
 univariate_results_10percent$label_name <- NA
@@ -56,11 +56,11 @@ univariate_results_15percent$effect_direction <- "Insignificant"
 
 ## if estimate_odds > 1 and pvalue  < 0.05, set as "positive"
 univariate_results_15percent$effect_direction[univariate_results_15percent$estimate_odds > 1 &
-                                                univariate_results_15percent$p.value < 0.15] <- "Positive"
+                                                univariate_results_15percent$p.value < 0.15] <- "Predictive of resistance"
 
 ## if estimate_odds < 1 and pvalue < 0.05, set as "negative"
 univariate_results_15percent$effect_direction[univariate_results_15percent$estimate_odds < 1 &
-                                                univariate_results_15percent$p.value < 0.15] <- "Negative"
+                                                univariate_results_15percent$p.value < 0.15] <- "Predictive of sensitivity"
 
 ## Setting labels for significant values
 univariate_results_15percent$label_name <- NA
@@ -113,4 +113,4 @@ ggsave(here::here("graphs/analysis/univariate_15significance_plot.pdf"), percent
 univariate_significance_plots <- ggarrange(percent5_plot, percent10_plot, percent15_plot,
                                            labels = c("A", "B", "C"),
                                            ncol = 2, nrow = 2)
-ggsave(here::here("graphs/analysis/univariate_significance_plots_combined.pdf"), univariate_significance_plots)
+ggsave(here::here("graphs/analysis/univariate_significance_plots_combined.pdf"), univariate_significance_plots, limitsize = TRUE)
