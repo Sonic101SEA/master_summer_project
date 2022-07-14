@@ -23,4 +23,4 @@ final_modelling_data$WGD <- ifelse(final_modelling_data$WGD == "TRUE", 1, 0) # T
 
 # Multivariate Analysis ---------------------------------------------------
 
-lasso_model <- cv.glmnet(x = final_modelling_data[4:17], y = final_modelling_data$Condition, family = "binomial", alpha = 1, nfolds = 10)
+lasso_model <- cv.glmnet(x = data.matrix(final_modelling_data[4:ncol(final_modelling_data)]), y = final_modelling_data$Condition, family = "binomial", alpha = 1, nfolds = 10)
