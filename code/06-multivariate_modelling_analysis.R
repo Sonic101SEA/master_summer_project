@@ -22,5 +22,9 @@ final_modelling_data$Condition <- ifelse(final_modelling_data$Condition == "Resi
 final_modelling_data$WGD <- ifelse(final_modelling_data$WGD == "TRUE", 1, 0) # TRUE = 1, FALSE = 0
 
 # Multivariate Analysis ---------------------------------------------------
+## Unsupervised clustering
 
+
+
+## Lasso
 lasso_model <- cv.glmnet(x = data.matrix(final_modelling_data[4:ncol(final_modelling_data)]), y = final_modelling_data$Condition, family = "binomial", alpha = 1, nfolds = 10)
