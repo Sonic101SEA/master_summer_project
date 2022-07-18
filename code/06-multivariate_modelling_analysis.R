@@ -4,6 +4,7 @@
 library(glmnet)
 library(klaR)
 library(clustMixType)
+library(cluster)
 # Data --------------------------------------------------------------------
 
 modelling_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
@@ -27,16 +28,14 @@ labels <- subset(final_modelling_data, select = c('tumour_specimen_aliquot_id',
                                                   'Condition'))
 
 ## Setting row names then removing id columns
-rownames(final_modelling_data) <- final_modelling_data$tumour_specimen_aliquot_id
-final_modelling_data <- subset(final_modelling_data, 
-                               select = -c(TCGA_id, tumour_specimen_aliquot_id))
+# rownames(final_modelling_data) <- final_modelling_data$tumour_specimen_aliquot_id
+# final_modelling_data <- subset(final_modelling_data, 
+#                                select = -c(TCGA_id, tumour_specimen_aliquot_id))
 
 
 # Multivariate Analysis - Unsupervised Clustering -------------------------
 set.seed(1)
 # Data Preparation
-
-
 ## Selecting variables that have more than 0.25 p-value
 select_categorical <- c('ATM', 'NBN', 'CHEK1')
 
@@ -50,12 +49,20 @@ categorical_modelling_data <- subset(final_modelling_data, # Subset categorical 
 mixed_modelling_data <- subset(final_modelling_data,
                                select = select_mixed)
 
-# kmodes clustering - only for categorical variables
+# Clustering
 
-kmodes_results <- kmodes(clustering_modelling_data, 2, 5)
+## kmodes clustering - only for categorical variables
 
-# K-prototype clustering
+kmodes_results <- kmodes(categorical_modelling_data, 2, 5)
 
+## K-prototype clustering
+kproto_results <- kproto(mixed_modelling_data, k = 2, iter.max = 10)
+
+## Gowers distance then use k-medoids clustering
+gowers_distances <- daisy(mixed_modelling_data, metric = "gower", 
+                          type = list(asymm = c(8))) # Setting WGD as asymmetric binary
+
+kmedoids_results <- pam(gowers_distances, k = 2)
 
 # Lasso
 lasso_model <- cv.glmnet(x = data.matrix(final_modelling_data[4:ncol(final_modelling_data)]), y = final_modelling_data$Condition, family = "binomial", alpha = 1, nfolds = 10)
