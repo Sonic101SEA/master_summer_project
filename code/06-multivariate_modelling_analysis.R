@@ -21,7 +21,7 @@ columns_to_factorise <- c('BARD1', 'FAM175A', 'NBN', 'MRE11A', 'ATM', 'CHEK1', '
 final_modelling_data[columns_to_factorise] <- lapply(final_modelling_data[columns_to_factorise], factor, levels = c("0", "-2", "-1", "1", "2"))
 final_modelling_data$mhBRCA2 <- factor(final_modelling_data$mhBRCA2)
 final_modelling_data$Condition <- ifelse(final_modelling_data$Condition == "Resistant", 1, 0) # Resistant = 1, Sensitive = 0
-final_modelling_data$WGD <- ifelse(final_modelling_data$WGD == "TRUE", 1, 0) # TRUE = 1, FALSE = 0
+# final_modelling_data$WGD <- ifelse(final_modelling_data$WGD == "TRUE", 1, 0) # TRUE = 1, FALSE = 0
 
 ## Extracting labels
 labels <- subset(final_modelling_data, select = c('tumour_specimen_aliquot_id', 
