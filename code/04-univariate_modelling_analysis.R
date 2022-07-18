@@ -33,7 +33,7 @@ logistic_regression <- function(variable, dataset){
 # Function to paste variable name 
 "%+%" <- function(x,y) paste(x, y, sep = "")
 
-# Analysis ----------------------------------------------------------------
+# Logistic Regression Analysis ----------------------------------------------------------------
 # Model for one variable
 model_test <- glm(Condition ~ BRCA2, family = binomial(link = 'logit'), data = final_modelling_data)
 
@@ -53,6 +53,15 @@ results$estimate_odds <- exp(results$estimate)
 # Model for all variables in one model (Do not use)
 model_all <- glm(reformulate(paste(predictors, sep = ""), "Condition"), 
                  family = binomial(link = 'logit'), data = final_modelling_data)
+
+
+# Linear Regression Analysis ----------------------------------------------
+# Analysis to see why certain effects are so large
+
+## CX 4
+
+## CX 10
+
 
 
 

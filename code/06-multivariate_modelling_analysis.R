@@ -23,8 +23,11 @@ final_modelling_data$WGD <- ifelse(final_modelling_data$WGD == "TRUE", 1, 0) # T
 
 # Multivariate Analysis ---------------------------------------------------
 ## Unsupervised clustering
-
-
+set.seed(1)
+columns_to_select <- c('ATM', 'NBN', 'CHEK1')
+labels <- subset(final_modelling_data, select = c('tumour_specimen_aliquot_id', 'Condition'))
+clustering_modelling_data <- subset(final_modelling_data, select =  columns_to_select)
+cluster_results <- kmodes(clustering_modelling_data, 2, 5)
 
 ## Lasso
 lasso_model <- cv.glmnet(x = data.matrix(final_modelling_data[4:ncol(final_modelling_data)]), y = final_modelling_data$Condition, family = "binomial", alpha = 1, nfolds = 10)
