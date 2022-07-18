@@ -59,9 +59,21 @@ model_all <- glm(reformulate(paste(predictors, sep = ""), "Condition"),
 # Analysis to see why certain effects are so large
 
 ## CX 4
+lm_model_cx4 <- lm(CX4 ~ Condition, data = final_modelling_data)
+summary(lm_model_cx4)
+lm_results_cx4 <- tidy(lm_model_cx4)
+# write.csv(lm_results_cx4, here::here("data/univariate_results/cx4_lm_model.csv"))
 
 ## CX 10
+lm_model_cx10 <- lm(CX10 ~ Condition, data = final_modelling_data)
+summary(lm_model_cx10)
+lm_results_cx10 <- tidy(lm_model_cx10)
+# write.csv(lm_results_cx10, here::here("data/univariate_results/cx10_lm_model.csv"))
 
-
+## CX 14
+lm_model_cx14 <- lm(CX14 ~ Condition, data = final_modelling_data)
+summary(lm_model_cx14)
+lm_results_cx14 <- tidy(lm_model_cx14)
+# write.csv(lm_results_cx14, here::here("data/univariate_results/cx14_lm_model.csv"))
 
 
