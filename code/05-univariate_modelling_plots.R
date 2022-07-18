@@ -113,4 +113,5 @@ ggsave(here::here("graphs/analysis/univariate_15significance_plot.pdf"), percent
 univariate_significance_plots <- ggarrange(percent5_plot, percent10_plot, percent15_plot,
                                            labels = c("A", "B", "C"),
                                            ncol = 2, nrow = 2)
-ggsave(here::here("graphs/analysis/univariate_significance_plots_combined.pdf"), univariate_significance_plots, limitsize = TRUE)
+ggsave(here::here("graphs/analysis/univariate_significance_plots_combined.pdf"), 
+       univariate_significance_plots, limitsize = TRUE)
