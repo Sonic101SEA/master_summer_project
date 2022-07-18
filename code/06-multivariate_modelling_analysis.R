@@ -68,5 +68,16 @@ cut_2_clusters <- cutree(hcluster_results, k = 2) # Cutting tree to obtain 2 clu
 
 kmodes_results <- kmodes(categorical_modelling_data, 2, 5)
 
+# Combining clustering results into a dataframe to see their cluster labels from each algorithm
+kproto_results$cluster
+kmedoids_results$clustering
+cut_2_clusters
+
+variables_with_clustering <- mixed_modelling_data
+variables_with_clustering$kproto_clustering <- kproto_results$cluster
+variables_with_clustering$kmedoids_clustering <- kmedoids_results$clustering
+variables_with_clustering$hier_clustering <- cut_2_clusters
+variables_with_clustering$Condition <- final_modelling_data$Condition
+
 # Lasso
 lasso_model <- cv.glmnet(x = data.matrix(final_modelling_data[4:ncol(final_modelling_data)]), y = final_modelling_data$Condition, family = "binomial", alpha = 1, nfolds = 10)
