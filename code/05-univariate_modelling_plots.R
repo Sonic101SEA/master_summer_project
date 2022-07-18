@@ -36,11 +36,11 @@ univariate_results_10percent <- univariate_results_rm_interecept
 ## Creating new column for effect direction
 univariate_results_10percent$effect_direction <- "Insignificant"
 
-## if estimate_odds > 1 and pvalue  < 0.05, set as "positive"
+## if estimate_odds > 1 and pvalue  < 0.10, set as "positive"
 univariate_results_10percent$effect_direction[univariate_results_10percent$estimate_odds > 1 &
                                                     univariate_results_10percent$p.value < 0.10] <- "Predictive of resistance"
 
-## if estimate_odds < 1 and pvalue < 0.05, set as "negative"
+## if estimate_odds < 1 and pvalue < 0.10, set as "negative"
 univariate_results_10percent$effect_direction[univariate_results_10percent$estimate_odds < 1 &
                                                     univariate_results_10percent$p.value < 0.10] <- "Predictive of sensitivity"
 
@@ -54,11 +54,11 @@ univariate_results_15percent <- univariate_results_rm_interecept
 ## Creating new column for effect direction
 univariate_results_15percent$effect_direction <- "Insignificant"
 
-## if estimate_odds > 1 and pvalue  < 0.05, set as "positive"
+## if estimate_odds > 1 and pvalue  < 0.15, set as "positive"
 univariate_results_15percent$effect_direction[univariate_results_15percent$estimate_odds > 1 &
                                                 univariate_results_15percent$p.value < 0.15] <- "Predictive of resistance"
 
-## if estimate_odds < 1 and pvalue < 0.05, set as "negative"
+## if estimate_odds < 1 and pvalue < 0.15, set as "negative"
 univariate_results_15percent$effect_direction[univariate_results_15percent$estimate_odds < 1 &
                                                 univariate_results_15percent$p.value < 0.15] <- "Predictive of sensitivity"
 
@@ -104,7 +104,7 @@ percent15_plot <-
     geom_hline(yintercept = -log10(0.15), col = "red") +
     geom_vline(xintercept = 0, linetype = "dotted") +
     coord_cartesian(xlim = c(-30, 30)) +
-    scale_colour_manual(values = c("black", "red", "blue")) +
+    scale_colour_manual(values = c("black", "blue", "red")) +
     geom_text_repel() +
     labs(title = "15% significance threshold")
 ggsave(here::here("graphs/analysis/univariate_15significance_plot.pdf"), percent15_plot)
