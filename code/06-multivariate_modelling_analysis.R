@@ -51,10 +51,6 @@ mixed_modelling_data <- subset(final_modelling_data,
 
 # Clustering
 
-## kmodes clustering - only for categorical variables
-
-kmodes_results <- kmodes(categorical_modelling_data, 2, 5)
-
 ## K-prototype clustering
 kproto_results <- kproto(mixed_modelling_data, k = 2, iter.max = 10)
 
@@ -63,6 +59,14 @@ gowers_distances <- daisy(mixed_modelling_data, metric = "gower",
                           type = list(asymm = c(8))) # Setting WGD as asymmetric binary
 
 kmedoids_results <- pam(gowers_distances, k = 2)
+
+## Hierarchical clustering using gowers distance
+hcluster_results <- hclust(gowers_distances)
+cut_2_clusters <- cutree(hcluster_results, k = 2) # Cutting tree to obtain 2 clusters
+
+## kmodes clustering - only for categorical variables
+
+kmodes_results <- kmodes(categorical_modelling_data, 2, 5)
 
 # Lasso
 lasso_model <- cv.glmnet(x = data.matrix(final_modelling_data[4:ncol(final_modelling_data)]), y = final_modelling_data$Condition, family = "binomial", alpha = 1, nfolds = 10)
