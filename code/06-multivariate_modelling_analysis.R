@@ -108,7 +108,7 @@ variables_with_clustering$kproto_clustering <- factor(kproto_results$cluster)
 variables_with_clustering$kmedoids_clustering <- factor(kmedoids_results$clustering)
 variables_with_clustering$hier_clustering <- factor(cut_2_clusters)
 variables_with_clustering$Condition <- final_modelling_data$Condition
-# variables_with_clustering$dbscan_clustering <- factor(dbscan_results$cluster)
+# variables_with_clustering$dbscan_clustering <- as.numeric(dbscan_results$cluster)
 
 
 # Checking which cluster is sensitive or resistant
@@ -131,10 +131,10 @@ summary(hier_glm)
   ## Cluster 2 is sensitivty, cluster 1 is resistance
 
 # dbscan_glm <-
-#   glm(dbscan_clustering ~ CX3, variables_with_clustering, 
+#   glm(dbscan_clustering ~ CX3, variables_with_clustering,
 #       family = binomial(link = "logit"))
 # summary(dbscan_glm)
-#   ## Cluster 1 is resistance, cluster 0 is sensitivity
+#   ## Cluster 1 is resistant, cluster 0 is sensitivity
 
 # Changing the labels for the cluster names
 variables_with_clustering_labelled <- variables_with_clustering
@@ -151,13 +151,17 @@ variables_with_clustering_labelled$kmedoids_clustering <- ifelse(variables_with_
 variables_with_clustering_labelled$hier_clustering <- ifelse(variables_with_clustering$hier_clustering == 2,
                                                                  "Sensitive", "Resistant")
 
+# ## For DBSCAN
+# variables_with_clustering_labelled$dbscan_clustering <- ifelse(variables_with_clustering$hier_clustering == 1,
+#                                                              "Resistant", "Sensitive")
+
 # Computing final cluster labels from 3 algorithms
 variables_with_clustering_labelled$final_cluster_labels <- NA
 
 variables_with_clustering_labelled$final_cluster_labels <-
   apply(variables_with_clustering_labelled[c('kproto_clustering',
                                             'kmedoids_clustering',
-                                            'hier_clustering')],
+                                            'dbscan_clustering')],
         1, chooseBestModel)
 
 # Computing accuracy of cluster results compared to ground truth labels
@@ -173,6 +177,10 @@ sum(variables_with_clustering_labelled$kmedoids_clustering== variables_with_clus
 ## Hierarchical clustering vs ground truth
 sum(variables_with_clustering_labelled$hier_clustering == variables_with_clustering_labelled$Condition) /
   nrow(variables_with_clustering_labelled) * 100
+
+# ## DBSCAN clustering vs ground truth
+# sum(variables_with_clustering_labelled$dbscan_clustering == variables_with_clustering_labelled$Condition) /
+#   nrow(variables_with_clustering_labelled) * 100
 
 ## Final cluster after ensemble of 3 algorithms
 sum(variables_with_clustering_labelled$final_cluster_labels == variables_with_clustering_labelled$Condition) /
@@ -194,6 +202,11 @@ hier_clustering_labelled <-
   variables_with_clustering %>%
     ggplot(aes(y = cut_2_clusters)) +
     geom_bar(aes(fill = Condition))
+
+# dbscan_clustering_labelled <-
+#   variables_with_clustering %>%
+#     ggplot(aes(y = dbscan_clustering)) +
+#     geom_bar(aes(fill = Condition))
 
 ## 2D plot
 ### Kmedoids results
