@@ -5,6 +5,10 @@ library(glmnet)
 library(klaR)
 library(clustMixType)
 library(cluster)
+library(mclust)
+library(factoextra)
+library(ggplot2)
+library(dplyr)
 # Data --------------------------------------------------------------------
 
 modelling_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
@@ -24,7 +28,7 @@ columns_to_factorise <- c('BARD1', 'FAM175A', 'NBN', 'MRE11A', 'ATM', 'CHEK1',
 final_modelling_data[columns_to_factorise] <- lapply(final_modelling_data[columns_to_factorise], 
                                                      factor, levels = c("0", "-2", "-1", "1", "2"))
 final_modelling_data$mhBRCA2 <- factor(final_modelling_data$mhBRCA2)
-final_modelling_data$Condition <- ifelse(final_modelling_data$Condition == "Resistant", 1, 0) # Resistant = 1, Sensitive = 0
+# final_modelling_data$Condition <- ifelse(final_modelling_data$Condition == "Resistant", 1, 0) # Resistant = 1, Sensitive = 0
 # final_modelling_data$WGD <- ifelse(final_modelling_data$WGD == "TRUE", 1, 0) # TRUE = 1, FALSE = 0
 
 ## Extracting labels
@@ -38,7 +42,7 @@ labels <- subset(final_modelling_data, select = c('tumour_specimen_aliquot_id',
 
 
 # Multivariate Analysis - Unsupervised Clustering -------------------------
-set.seed(1)
+set.seed(3)
 # Data Preparation
 ## Selecting variables that have more than 0.25 p-value
 select_categorical <- c('ATM', 'NBN', 'CHEK1')
@@ -72,16 +76,78 @@ cut_2_clusters <- cutree(hcluster_results, k = 2) # Cutting tree to obtain 2 clu
 
 kmodes_results <- kmodes(categorical_modelling_data, 2, 5)
 
+## Checking the clusters results with adjusted Rand Index
+adjustedRandIndex(kproto_results$cluster, cut_2_clusters)
+
 # Combining clustering results into a dataframe to see their cluster labels from each algorithm
-kproto_results$cluster
-kmedoids_results$clustering
-cut_2_clusters
+# kproto_results$cluster
+# kmedoids_results$clustering
+# cut_2_clusters
 
 variables_with_clustering <- mixed_modelling_data
-variables_with_clustering$kproto_clustering <- kproto_results$cluster
-variables_with_clustering$kmedoids_clustering <- kmedoids_results$clustering
-variables_with_clustering$hier_clustering <- cut_2_clusters
+variables_with_clustering$kproto_clustering <- factor(kproto_results$cluster)
+variables_with_clustering$kmedoids_clustering <- factor(kmedoids_results$clustering)
+variables_with_clustering$hier_clustering <- factor(cut_2_clusters)
 variables_with_clustering$Condition <- final_modelling_data$Condition
 
+
+# Checking which cluster is sensitive or resistant
+kproto_glm <- 
+  glm(kproto_clustering ~ CX3, variables_with_clustering, 
+      family = binomial(link = "logit"))
+summary(kproto_glm)
+## Cluster 2 is resistance, cluster 1 is sensitivity
+
+kmedoids_glm <-
+  glm(kmedoids_clustering ~ CX3, variables_with_clustering, 
+      family = binomial(link = "logit"))
+summary(kmedoids_glm)
+## Cluster 2 is resistance, cluster 1 is sensitivity
+
+hier_glm <-
+  glm(hier_clustering ~ CX3, variables_with_clustering, 
+      family = binomial(link = "logit"))
+summary(hier_glm)
+## Cluster 2 is sensitivty, cluster 1 is resistance
+
+# Changing the labels for the cluster names
+variables_with_clustering_labelled <- variables_with_clustering
+
+## For kproto
+variables_with_clustering_labelled$kproto_clustering <- ifelse(variables_with_clustering$kproto_clustering == 2,
+                                                      "Resistant", "Sensitive")
+
+## For kmedoids
+variables_with_clustering_labelled$kmedoids_clustering <- ifelse(variables_with_clustering$kmedoids_clustering == 2,
+                                                               "Resistant", "Sensitive")
+
+## For hierarchical clustering
+variables_with_clustering_labelled$hier_clustering <- ifelse(variables_with_clustering$hier_clustering == 2,
+                                                                 "Sensitive", "Resistant")
+
+# Plotting the clusters
+## Barplots
+kproto_clustering_labelled <-
+  variables_with_clustering %>%
+  ggplot(aes(y = kproto_clustering)) +
+  geom_bar(aes(fill = Condition))
+
+kmedoids_clustering_labelled <-
+  variables_with_clustering %>%
+  ggplot(aes(y = kmedoids_clustering)) +
+  geom_bar(aes(fill = Condition))
+
+hier_clustering_labelled <-
+  variables_with_clustering %>%
+    ggplot(aes(y = cut_2_clusters)) +
+    geom_bar(aes(fill = Condition))
+
+## 2D plot
+### Kmedoids results
+clusplot(kmedoids_results, color = TRUE,
+         shade = TRUE, labels = 2, line = 0)
+
+fviz_cluster(kmedoids_results, kmedoids_results$clustering)
+
 # Lasso
-lasso_model <- cv.glmnet(x = data.matrix(final_modelling_data[4:ncol(final_modelling_data)]), y = final_modelling_data$Condition, family = "binomial", alpha = 1, nfolds = 10)
+# lasso_model <- cv.glmnet(x = data.matrix(final_modelling_data[4:ncol(final_modelling_data)]), y = final_modelling_data$Condition, family = "binomial", alpha = 1, nfolds = 10)
