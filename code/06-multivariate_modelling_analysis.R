@@ -125,6 +125,12 @@ variables_with_clustering_labelled$kmedoids_clustering <- ifelse(variables_with_
 variables_with_clustering_labelled$hier_clustering <- ifelse(variables_with_clustering$hier_clustering == 2,
                                                                  "Sensitive", "Resistant")
 
+# Computing final cluster labels from 3 algorithms
+variables_with_clustering_labelled$final_cluster_labels <- NA
+
+variables_with_clustering_labelled$final_cluster_labels <-
+
+
 # Plotting the clusters
 ## Barplots
 kproto_clustering_labelled <-
