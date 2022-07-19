@@ -9,6 +9,7 @@ library(mclust)
 library(factoextra)
 library(ggplot2)
 library(dplyr)
+library(dbscan)
 # Data --------------------------------------------------------------------
 
 modelling_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
@@ -40,9 +41,17 @@ labels <- subset(final_modelling_data, select = c('tumour_specimen_aliquot_id',
 # final_modelling_data <- subset(final_modelling_data, 
 #                                select = -c(TCGA_id, tumour_specimen_aliquot_id))
 
+# Functions ---------------------------------------------------------------
+
+chooseBestModel <- function(x) {
+  tabulatedOutcomes <- table(x)
+  sortedOutcomes <- sort(tabulatedOutcomes, decreasing=TRUE)
+  mostCommonLabel <- names(sortedOutcomes)[1]
+  mostCommonLabel
+}
 
 # Multivariate Analysis - Unsupervised Clustering -------------------------
-set.seed(3)
+set.seed(1)
 # Data Preparation
 ## Selecting variables that have more than 0.25 p-value
 select_categorical <- c('ATM', 'NBN', 'CHEK1')
@@ -57,6 +66,13 @@ categorical_modelling_data <- subset(final_modelling_data, # Subset categorical 
 mixed_modelling_data <- subset(final_modelling_data,
                                select = select_mixed)
 
+## Scaling numeric variables
+# mixed_modelling_data$age <- as.numeric(scale(mixed_modelling_data$age))
+# mixed_modelling_data$CX14 <- as.numeric(scale(mixed_modelling_data$CX14))
+# mixed_modelling_data$CX4 <- as.numeric(scale(mixed_modelling_data$CX4))
+# mixed_modelling_data$CX3 <- as.numeric(scale(mixed_modelling_data$CX3))
+# mixed_modelling_data$CX10 <- as.numeric(scale(mixed_modelling_data$CX10))
+
 # Clustering
 
 ## K-prototype clustering
@@ -69,12 +85,15 @@ gowers_distances <- daisy(mixed_modelling_data, metric = "gower",
 kmedoids_results <- pam(gowers_distances, k = 2)
 
 ## Hierarchical clustering using gowers distance
-hcluster_results <- hclust(gowers_distances)
+hcluster_results <- hclust(gowers_distances, method = "complete")
 cut_2_clusters <- cutree(hcluster_results, k = 2) # Cutting tree to obtain 2 clusters
 
-## kmodes clustering - only for categorical variables
+# ## DBSCAN Clustering
+# dbscan_results <- dbscan(gowers_distances, eps = 0.3)
 
-kmodes_results <- kmodes(categorical_modelling_data, 2, 5)
+
+## kmodes clustering - only for categorical variables
+# kmodes_results <- kmodes(categorical_modelling_data, 2, 5)
 
 ## Checking the clusters results with adjusted Rand Index
 adjustedRandIndex(kproto_results$cluster, cut_2_clusters)
@@ -89,6 +108,7 @@ variables_with_clustering$kproto_clustering <- factor(kproto_results$cluster)
 variables_with_clustering$kmedoids_clustering <- factor(kmedoids_results$clustering)
 variables_with_clustering$hier_clustering <- factor(cut_2_clusters)
 variables_with_clustering$Condition <- final_modelling_data$Condition
+# variables_with_clustering$dbscan_clustering <- factor(dbscan_results$cluster)
 
 
 # Checking which cluster is sensitive or resistant
@@ -96,19 +116,25 @@ kproto_glm <-
   glm(kproto_clustering ~ CX3, variables_with_clustering, 
       family = binomial(link = "logit"))
 summary(kproto_glm)
-## Cluster 2 is resistance, cluster 1 is sensitivity
+  ## Cluster 2 is resistance, cluster 1 is sensitivity
 
 kmedoids_glm <-
   glm(kmedoids_clustering ~ CX3, variables_with_clustering, 
       family = binomial(link = "logit"))
 summary(kmedoids_glm)
-## Cluster 2 is resistance, cluster 1 is sensitivity
+  ## Cluster 2 is resistance, cluster 1 is sensitivity
 
 hier_glm <-
   glm(hier_clustering ~ CX3, variables_with_clustering, 
       family = binomial(link = "logit"))
 summary(hier_glm)
-## Cluster 2 is sensitivty, cluster 1 is resistance
+  ## Cluster 2 is sensitivty, cluster 1 is resistance
+
+# dbscan_glm <-
+#   glm(dbscan_clustering ~ CX3, variables_with_clustering, 
+#       family = binomial(link = "logit"))
+# summary(dbscan_glm)
+#   ## Cluster 1 is resistance, cluster 0 is sensitivity
 
 # Changing the labels for the cluster names
 variables_with_clustering_labelled <- variables_with_clustering
@@ -129,7 +155,28 @@ variables_with_clustering_labelled$hier_clustering <- ifelse(variables_with_clus
 variables_with_clustering_labelled$final_cluster_labels <- NA
 
 variables_with_clustering_labelled$final_cluster_labels <-
+  apply(variables_with_clustering_labelled[c('kproto_clustering',
+                                            'kmedoids_clustering',
+                                            'hier_clustering')],
+        1, chooseBestModel)
 
+# Computing accuracy of cluster results compared to ground truth labels
+
+## Kprototype vs ground truth
+sum(variables_with_clustering_labelled$kproto_clustering == variables_with_clustering_labelled$Condition) /
+  nrow(variables_with_clustering_labelled) * 100
+
+## Kmedoids vs ground truth
+sum(variables_with_clustering_labelled$kmedoids_clustering== variables_with_clustering_labelled$Condition) /
+  nrow(variables_with_clustering_labelled) * 100
+
+## Hierarchical clustering vs ground truth
+sum(variables_with_clustering_labelled$hier_clustering == variables_with_clustering_labelled$Condition) /
+  nrow(variables_with_clustering_labelled) * 100
+
+## Final cluster after ensemble of 3 algorithms
+sum(variables_with_clustering_labelled$final_cluster_labels == variables_with_clustering_labelled$Condition) /
+  nrow(variables_with_clustering_labelled) * 100
 
 # Plotting the clusters
 ## Barplots
