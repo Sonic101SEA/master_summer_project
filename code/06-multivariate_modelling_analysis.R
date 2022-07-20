@@ -51,12 +51,12 @@ chooseBestModel <- function(x) {
   mostCommonLabel
 }
 
-draw_confusion_matrix <- function(cm) {
+draw_confusion_matrix <- function(cm, title_cm = "") {
   
   layout(matrix(c(1,1,2)))
   par(mar=c(2,2,2,2))
   plot(c(100, 345), c(300, 450), type = "n", xlab="", ylab="", xaxt='n', yaxt='n')
-  title('CONFUSION MATRIX', cex.main=2)
+  title(title_cm, cex.main=2)
   
   # create the matrix 
   rect(150, 430, 240, 370, col='#3F97D0')
@@ -157,22 +157,22 @@ variables_with_clustering$Condition <- final_modelling_data$Condition
 
 # Checking which cluster is sensitive or resistant
 kproto_glm <- 
-  glm(kproto_clustering ~ CX3, variables_with_clustering, 
+  glm(kproto_clustering ~ WGD, variables_with_clustering, 
       family = binomial(link = "logit"))
 summary(kproto_glm)
   ## Cluster 2 is resistance, cluster 1 is sensitivity
 
 kmedoids_glm <-
-  glm(kmedoids_clustering ~ CX3, variables_with_clustering, 
+  glm(kmedoids_clustering ~ WGD, variables_with_clustering, 
       family = binomial(link = "logit"))
 summary(kmedoids_glm)
   ## Cluster 2 is resistance, cluster 1 is sensitivity
 
 hier_glm <-
-  glm(hier_clustering ~ CX3, variables_with_clustering, 
+  glm(hier_clustering ~ WGD, variables_with_clustering, 
       family = binomial(link = "logit"))
 summary(hier_glm)
-  ## Cluster 2 is sensitivty, cluster 1 is resistance
+  ## Cluster 2 is resistance, cluster 1 is sensitivity
 
 # dbscan_glm <-
 #   glm(dbscan_clustering ~ CX3, variables_with_clustering,
@@ -201,7 +201,7 @@ variables_with_clustering_labelled$kmedoids_clustering <- ifelse(variables_with_
 
 ## For hierarchical clustering
 variables_with_clustering_labelled$hier_clustering <- ifelse(variables_with_clustering$hier_clustering == 2,
-                                                                 "Sensitive", "Resistant")
+                                                                 "Resistant", "Sensitive")
 
 # ## For DBSCAN
 # variables_with_clustering_labelled$dbscan_clustering <- ifelse(variables_with_clustering$hier_clustering == 1,
@@ -217,19 +217,19 @@ variables_with_clustering_labelled$final_cluster_labels <-
         1, chooseBestModel)
 
 
-# Multivariate analysis - Results -----------------------------------------
+# Multivariate analysis - Visualisation of Results -----------------------
 # Computing accuracy of cluster results compared to ground truth labels
 ## Kprototype vs ground truth
 sum(variables_with_clustering_labelled$kproto_clustering == variables_with_clustering_labelled$Condition) /
-  nrow(variables_with_clustering_labelled) * 100 # 65.8%
+  nrow(variables_with_clustering_labelled) * 100
 
 ## Kmedoids vs ground truth
 sum(variables_with_clustering_labelled$kmedoids_clustering== variables_with_clustering_labelled$Condition) /
-  nrow(variables_with_clustering_labelled) * 100 # 76.3%
+  nrow(variables_with_clustering_labelled) * 100
 
 ## Hierarchical clustering vs ground truth
 sum(variables_with_clustering_labelled$hier_clustering == variables_with_clustering_labelled$Condition) /
-  nrow(variables_with_clustering_labelled) * 100 # 28.9%
+  nrow(variables_with_clustering_labelled) * 100
 
 # ## DBSCAN clustering vs ground truth
 # sum(variables_with_clustering_labelled$dbscan_clustering == variables_with_clustering_labelled$Condition) /
@@ -237,7 +237,7 @@ sum(variables_with_clustering_labelled$hier_clustering == variables_with_cluster
 
 ## Final cluster after ensemble of 3 algorithms
 sum(variables_with_clustering_labelled$final_cluster_labels == variables_with_clustering_labelled$Condition) /
-  nrow(variables_with_clustering_labelled) * 100 # 65.8%
+  nrow(variables_with_clustering_labelled) * 100
 
 ## Producing confusion matrix based on the prediction compared to ground truth
 ### Normal table to see values
@@ -262,7 +262,21 @@ conf_matrix_ensemble <- confusionMatrix(factor(variables_with_clustering_labelle
                                           mode = "everything")
 
 ### Plotting confusion matrix
-draw_confusion_matrix(conf_matrix_ensemble)
+pdf(here::here("graphs/analysis/confusion_matrix_ensemble.pdf"))
+draw_confusion_matrix(conf_matrix_ensemble, "Ensemble Confusion Matrix")
+dev.off()
+
+pdf(here::here("graphs/analysis/confusion_matrix_kproto.pdf"))
+draw_confusion_matrix(conf_matrix_kproto, "K-prototypes Clustering Confusion Matrix")
+dev.off()
+
+pdf(here::here("graphs/analysis/confusion_matrix_kmedoids.pdf"))
+draw_confusion_matrix(conf_matrix_kmedoids, "K-Medoids Clustering with Gower's Distance Confusion Matrix")
+dev.off()
+
+pdf(here::here("graphs/analysis/confusion_matrix_hier.pdf"))
+draw_confusion_matrix(conf_matrix_hier, "Hierarchical Clustering with Gower's Distance Confusion Matrix")
+dev.off()
 
 
 # Plotting the clusters
