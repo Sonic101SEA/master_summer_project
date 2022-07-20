@@ -310,14 +310,18 @@ clusplot(kmedoids_results, color = TRUE,
 ### Hierarchical clustering results
 dendrogram_object <- as.dendrogram(hcluster_results) # Creating dendrogram object
 
-nodePar <- list(lab.cex = 0.6, pch = c(NA, 19),
-                cex = 0.7, col = "blue")
-# labels(dendrogram_object) <- labels$tumour_specimen_aliquot_id[order.dendrogram(dendrogram_object)]
+# nodePar <- list(lab.cex = 0.6, pch = c(NA, 19),
+#                 cex = 0.7, col = "blue")
+labels(dendrogram_object) <- labels$Condition[order.dendrogram(dendrogram_object)]
 # dendrogram_object <- set(dendrogram_object, "labels_cex", 0.2)
-dendrogram_object <- color_branches(dendrogram_object, k = 2)
+dendrogram_object <- color_branches(dendrogram_object, k = 2, col = as.numeric(unique(labels$Condition)))
+dendrogram_object <- dendrogram_object %>%
+  set("labels_colors", as.numeric(labels$Condition),
+                         order_value = TRUE) %>%
+  set("labels_cex", 0.7)
 
 #pdf(here::here("graphs/analysis/hierarchical_clustering_dendrogram_cluster_coloured.pdf"))
-plot(dendrogram_object, leaflab = "none", nodePar = nodePar, 
+plot(dendrogram_object, 
      main = "Hierarchical Clustering", ylab = "Height")
 #dev.off()
 
@@ -326,8 +330,4 @@ plot(hcluster_results, labels = labels$tumour_specimen_aliquot_id, cex = 0.3,
      main = "Hierarchical Clustering", xlab = "Height", hang = -1)
 #dev.off()
 
-
 fviz_cluster(kmedoids_results, kmedoids_results$clustering)
-
-# Lasso
-# lasso_model <- cv.glmnet(x = data.matrix(final_modelling_data[4:ncol(final_modelling_data)]), y = final_modelling_data$Condition, family = "binomial", alpha = 1, nfolds = 10)
