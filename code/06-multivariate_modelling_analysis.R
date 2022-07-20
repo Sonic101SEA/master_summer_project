@@ -136,6 +136,14 @@ summary(hier_glm)
 # summary(dbscan_glm)
 #   ## Cluster 1 is resistant, cluster 0 is sensitivity
 
+# ## Discriminant analysis
+# ### First looking at how the grouping compares between clusters
+# table(hier = variables_with_clustering$hier_clustering, kmedoids = variables_with_clustering$kmedoids_clustering)
+# 
+# lda_clustering <- lda(Condition ~ hier_clustering + kmedoids_clustering, variables_with_clustering)
+# table(variables_with_clustering$Condition, predict(lda_clustering)$class)
+
+
 # Changing the labels for the cluster names
 variables_with_clustering_labelled <- variables_with_clustering
 
@@ -161,7 +169,7 @@ variables_with_clustering_labelled$final_cluster_labels <- NA
 variables_with_clustering_labelled$final_cluster_labels <-
   apply(variables_with_clustering_labelled[c('kproto_clustering',
                                             'kmedoids_clustering',
-                                            'dbscan_clustering')],
+                                            'hier_clustering')],
         1, chooseBestModel)
 
 # Computing accuracy of cluster results compared to ground truth labels
@@ -185,6 +193,10 @@ sum(variables_with_clustering_labelled$hier_clustering == variables_with_cluster
 ## Final cluster after ensemble of 3 algorithms
 sum(variables_with_clustering_labelled$final_cluster_labels == variables_with_clustering_labelled$Condition) /
   nrow(variables_with_clustering_labelled) * 100
+
+## Producing confusion matrix based on the prediction compared to ground truth
+table(Pred = variables_with_clustering_labelled$final_cluster_labels,
+      Actual = variables_with_clustering_labelled$Condition)
 
 # Plotting the clusters
 ## Barplots
