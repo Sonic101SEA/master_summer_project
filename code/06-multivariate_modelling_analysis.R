@@ -10,6 +10,7 @@ library(factoextra)
 library(ggplot2)
 library(dplyr)
 library(dbscan)
+library(caret)
 # Data --------------------------------------------------------------------
 
 modelling_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
@@ -50,7 +51,50 @@ chooseBestModel <- function(x) {
   mostCommonLabel
 }
 
-# Multivariate Analysis - Unsupervised Clustering -------------------------
+draw_confusion_matrix <- function(cm) {
+  
+  layout(matrix(c(1,1,2)))
+  par(mar=c(2,2,2,2))
+  plot(c(100, 345), c(300, 450), type = "n", xlab="", ylab="", xaxt='n', yaxt='n')
+  title('CONFUSION MATRIX', cex.main=2)
+  
+  # create the matrix 
+  rect(150, 430, 240, 370, col='#3F97D0')
+  text(195, 435, 'Resistant', cex=1.2)
+  rect(250, 430, 340, 370, col='#F7AD50')
+  text(295, 435, 'Sensitive', cex=1.2)
+  text(125, 370, 'Predicted', cex=1.3, srt=90, font=2)
+  text(245, 450, 'Actual', cex=1.3, font=2)
+  rect(150, 305, 240, 365, col='#F7AD50')
+  rect(250, 305, 340, 365, col='#3F97D0')
+  text(140, 400, 'Resistant', cex=1.2, srt=90)
+  text(140, 335, 'Sensitive', cex=1.2, srt=90)
+  
+  # add in the cm results 
+  res <- as.numeric(cm$table)
+  text(195, 400, res[1], cex=1.6, font=2, col='white')
+  text(195, 335, res[2], cex=1.6, font=2, col='white')
+  text(295, 400, res[3], cex=1.6, font=2, col='white')
+  text(295, 335, res[4], cex=1.6, font=2, col='white')
+  
+  # add in the specifics 
+  plot(c(100, 0), c(100, 0), type = "n", xlab="", ylab="", main = "DETAILS", xaxt='n', yaxt='n')
+  text(10, 85, names(cm$byClass[1]), cex=1.2, font=2)
+  text(10, 70, round(as.numeric(cm$byClass[1]), 3), cex=1.2)
+  text(30, 85, names(cm$byClass[2]), cex=1.2, font=2)
+  text(30, 70, round(as.numeric(cm$byClass[2]), 3), cex=1.2)
+  text(50, 85, names(cm$byClass[5]), cex=1.2, font=2)
+  text(50, 70, round(as.numeric(cm$byClass[5]), 3), cex=1.2)
+  text(70, 85, names(cm$byClass[6]), cex=1.2, font=2)
+  text(70, 70, round(as.numeric(cm$byClass[6]), 3), cex=1.2)
+  text(90, 85, names(cm$byClass[7]), cex=1.2, font=2)
+  text(90, 70, round(as.numeric(cm$byClass[7]), 3), cex=1.2)
+  
+  # add in the accuracy information 
+  text(50, 35, names(cm$overall[1]), cex=1.5, font=2)
+  text(50, 20, round(as.numeric(cm$overall[1]), 3), cex=1.4)
+}  
+# Multivariate Analysis - Conducting Unsupervised Clustering --------------
 set.seed(1)
 # Data Preparation
 ## Selecting variables that have more than 0.25 p-value
@@ -172,19 +216,20 @@ variables_with_clustering_labelled$final_cluster_labels <-
                                             'hier_clustering')],
         1, chooseBestModel)
 
-# Computing accuracy of cluster results compared to ground truth labels
 
+# Multivariate analysis - Results -----------------------------------------
+# Computing accuracy of cluster results compared to ground truth labels
 ## Kprototype vs ground truth
 sum(variables_with_clustering_labelled$kproto_clustering == variables_with_clustering_labelled$Condition) /
-  nrow(variables_with_clustering_labelled) * 100
+  nrow(variables_with_clustering_labelled) * 100 # 65.8%
 
 ## Kmedoids vs ground truth
 sum(variables_with_clustering_labelled$kmedoids_clustering== variables_with_clustering_labelled$Condition) /
-  nrow(variables_with_clustering_labelled) * 100
+  nrow(variables_with_clustering_labelled) * 100 # 76.3%
 
 ## Hierarchical clustering vs ground truth
 sum(variables_with_clustering_labelled$hier_clustering == variables_with_clustering_labelled$Condition) /
-  nrow(variables_with_clustering_labelled) * 100
+  nrow(variables_with_clustering_labelled) * 100 # 28.9%
 
 # ## DBSCAN clustering vs ground truth
 # sum(variables_with_clustering_labelled$dbscan_clustering == variables_with_clustering_labelled$Condition) /
@@ -192,11 +237,33 @@ sum(variables_with_clustering_labelled$hier_clustering == variables_with_cluster
 
 ## Final cluster after ensemble of 3 algorithms
 sum(variables_with_clustering_labelled$final_cluster_labels == variables_with_clustering_labelled$Condition) /
-  nrow(variables_with_clustering_labelled) * 100
+  nrow(variables_with_clustering_labelled) * 100 # 65.8%
 
 ## Producing confusion matrix based on the prediction compared to ground truth
+### Normal table to see values
 table(Pred = variables_with_clustering_labelled$final_cluster_labels,
       Actual = variables_with_clustering_labelled$Condition)
+
+### More detailed results from confusion matrix (includes sensitivity etc.)
+conf_matrix_kproto <- confusionMatrix(factor(variables_with_clustering_labelled$kproto_clustering),
+                                      reference = variables_with_clustering_labelled$Condition,
+                                      mode = "everything")
+
+conf_matrix_kmedoids <- confusionMatrix(factor(variables_with_clustering_labelled$kmedoids_clustering),
+                                        reference = variables_with_clustering_labelled$Condition,
+                                        mode = "everything")
+
+conf_matrix_hier <- confusionMatrix(factor(variables_with_clustering_labelled$hier_clustering),
+                                    reference = variables_with_clustering_labelled$Condition,
+                                    mode = "everything")
+
+conf_matrix_ensemble <- confusionMatrix(factor(variables_with_clustering_labelled$final_cluster_labels),
+                                          reference = variables_with_clustering_labelled$Condition,
+                                          mode = "everything")
+
+### Plotting confusion matrix
+draw_confusion_matrix(conf_matrix_ensemble)
+
 
 # Plotting the clusters
 ## Barplots
