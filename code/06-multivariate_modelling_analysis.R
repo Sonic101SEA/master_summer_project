@@ -263,21 +263,21 @@ conf_matrix_ensemble <- confusionMatrix(factor(variables_with_clustering_labelle
                                           mode = "everything")
 
 ### Plotting confusion matrix
-pdf(here::here("graphs/analysis/confusion_matrix_ensemble.pdf"))
+#pdf(here::here("graphs/analysis/confusion_matrix_ensemble.pdf"))
 draw_confusion_matrix(conf_matrix_ensemble, "Ensemble Confusion Matrix")
-dev.off()
+#dev.off()
 
-pdf(here::here("graphs/analysis/confusion_matrix_kproto.pdf"))
+#pdf(here::here("graphs/analysis/confusion_matrix_kproto.pdf"))
 draw_confusion_matrix(conf_matrix_kproto, "K-prototypes Clustering Confusion Matrix")
-dev.off()
+#dev.off()
 
-pdf(here::here("graphs/analysis/confusion_matrix_kmedoids.pdf"))
+#pdf(here::here("graphs/analysis/confusion_matrix_kmedoids.pdf"))
 draw_confusion_matrix(conf_matrix_kmedoids, "K-Medoids Clustering with Gower's Distance Confusion Matrix")
-dev.off()
+#dev.off()
 
-pdf(here::here("graphs/analysis/confusion_matrix_hier.pdf"))
+#pdf(here::here("graphs/analysis/confusion_matrix_hier.pdf"))
 draw_confusion_matrix(conf_matrix_hier, "Hierarchical Clustering with Gower's Distance Confusion Matrix")
-dev.off()
+#dev.off()
 
 
 # Plotting the clusters
@@ -316,15 +316,15 @@ nodePar <- list(lab.cex = 0.6, pch = c(NA, 19),
 # dendrogram_object <- set(dendrogram_object, "labels_cex", 0.2)
 dendrogram_object <- color_branches(dendrogram_object, k = 2)
 
-pdf(here::here("graphs/analysis/hierarchical_clustering_dendrogram_cluster_coloured.pdf"))
+#pdf(here::here("graphs/analysis/hierarchical_clustering_dendrogram_cluster_coloured.pdf"))
 plot(dendrogram_object, leaflab = "none", nodePar = nodePar, 
      main = "Hierarchical Clustering", ylab = "Height")
-dev.off()
+#dev.off()
 
-pdf(here::here("graphs/analysis/hierarchical_clustering_dendrogram_labelled.pdf"))
+#pdf(here::here("graphs/analysis/hierarchical_clustering_dendrogram_labelled.pdf"))
 plot(hcluster_results, labels = labels$tumour_specimen_aliquot_id, cex = 0.3,
      main = "Hierarchical Clustering", xlab = "Height", hang = -1)
-dev.off()
+#dev.off()
 
 
 fviz_cluster(kmedoids_results, kmedoids_results$clustering)
