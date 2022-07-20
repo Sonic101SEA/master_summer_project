@@ -304,8 +304,7 @@ hier_clustering_labelled <-
 
 ## Visualisation of clusters
 ### Kmedoids results
-clusplot(kmedoids_results, color = TRUE,
-         shade = TRUE, line = 0)
+clusplot(kmedoids_results, color = TRUE, line = 0)
 
 ### Hierarchical clustering results
 dendrogram_object <- as.dendrogram(hcluster_results) # Creating dendrogram object
