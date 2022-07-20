@@ -11,6 +11,7 @@ library(ggplot2)
 library(dplyr)
 library(dbscan)
 library(caret)
+library(dendextend)
 # Data --------------------------------------------------------------------
 
 modelling_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
@@ -301,10 +302,30 @@ hier_clustering_labelled <-
 #     ggplot(aes(y = dbscan_clustering)) +
 #     geom_bar(aes(fill = Condition))
 
-## 2D plot
+## Visualisation of clusters
 ### Kmedoids results
 clusplot(kmedoids_results, color = TRUE,
-         shade = TRUE, labels = 2, line = 0)
+         shade = TRUE, line = 0)
+
+### Hierarchical clustering results
+dendrogram_object <- as.dendrogram(hcluster_results) # Creating dendrogram object
+
+nodePar <- list(lab.cex = 0.6, pch = c(NA, 19),
+                cex = 0.7, col = "blue")
+# labels(dendrogram_object) <- labels$tumour_specimen_aliquot_id[order.dendrogram(dendrogram_object)]
+# dendrogram_object <- set(dendrogram_object, "labels_cex", 0.2)
+dendrogram_object <- color_branches(dendrogram_object, k = 2)
+
+pdf(here::here("graphs/analysis/hierarchical_clustering_dendrogram_cluster_coloured.pdf"))
+plot(dendrogram_object, leaflab = "none", nodePar = nodePar, 
+     main = "Hierarchical Clustering", ylab = "Height")
+dev.off()
+
+pdf(here::here("graphs/analysis/hierarchical_clustering_dendrogram_labelled.pdf"))
+plot(hcluster_results, labels = labels$tumour_specimen_aliquot_id, cex = 0.3,
+     main = "Hierarchical Clustering", xlab = "Height", hang = -1)
+dev.off()
+
 
 fviz_cluster(kmedoids_results, kmedoids_results$clustering)
 
