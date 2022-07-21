@@ -205,6 +205,11 @@ variables_with_clustering_labelled$kmedoids_clustering <- ifelse(variables_with_
 variables_with_clustering_labelled$hier_clustering <- ifelse(variables_with_clustering$hier_clustering == 2,
                                                                  "Resistant", "Sensitive")
 
+# Checkpoint saving dataframe after clustering
+# variables_with_clustering_labelled_ids <- variables_with_clustering_labelled
+# rownames(variables_with_clustering_labelled_ids) <- labels$tumour_specimen_aliquot_id
+# write.csv(variables_with_clustering_labelled_ids, here::here("data/multivariate_results/clustering_results_dataframe.csv"))
+
 # ## For DBSCAN
 # variables_with_clustering_labelled$dbscan_clustering <- ifelse(variables_with_clustering$hier_clustering == 1,
 #                                                              "Resistant", "Sensitive")
