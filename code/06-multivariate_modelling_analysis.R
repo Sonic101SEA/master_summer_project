@@ -253,19 +253,19 @@ table(Pred = variables_with_clustering_labelled$final_cluster_labels,
 
 ### More detailed results from confusion matrix (includes sensitivity etc.)
 conf_matrix_kproto <- confusionMatrix(factor(variables_with_clustering_labelled$kproto_clustering),
-                                      reference = variables_with_clustering_labelled$Condition,
+                                      reference = factor(variables_with_clustering_labelled$Condition),
                                       mode = "everything")
 
 conf_matrix_kmedoids <- confusionMatrix(factor(variables_with_clustering_labelled$kmedoids_clustering),
-                                        reference = variables_with_clustering_labelled$Condition,
+                                        reference = factor(variables_with_clustering_labelled$Condition),
                                         mode = "everything")
 
 conf_matrix_hier <- confusionMatrix(factor(variables_with_clustering_labelled$hier_clustering),
-                                    reference = variables_with_clustering_labelled$Condition,
+                                    reference = factor(variables_with_clustering_labelled$Condition),
                                     mode = "everything")
 
 conf_matrix_ensemble <- confusionMatrix(factor(variables_with_clustering_labelled$final_cluster_labels),
-                                          reference = variables_with_clustering_labelled$Condition,
+                                          reference = factor(variables_with_clustering_labelled$Condition),
                                           mode = "everything")
 
 ### Plotting confusion matrix
