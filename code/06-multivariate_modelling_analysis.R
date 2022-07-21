@@ -12,6 +12,7 @@ library(dplyr)
 library(dbscan)
 library(caret)
 library(dendextend)
+library(Rtsne)
 # Data --------------------------------------------------------------------
 
 modelling_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
@@ -304,7 +305,19 @@ hier_clustering_labelled <-
 
 ## Visualisation of clusters
 ### Kmedoids results
+tsne_obj <- Rtsne(gowers_distances, is_distance = TRUE, perplexity = 12) # Converting to T-SNE object
+
+tsne_data <- tsne_obj$Y %>%
+  data.frame() %>%
+  setNames(c("X", "Y")) %>%
+  mutate(cluster = factor(kmedoids_results$clustering),
+         name = labels$Condition)
+  
+ggplot(aes(x = X, y = Y), data = tsne_data) +
+  geom_point(aes(color = cluster))
+
 clusplot(kmedoids_results, color = TRUE, line = 0)
+
 
 ### Hierarchical clustering results
 dendrogram_object <- as.dendrogram(hcluster_results) # Creating dendrogram object
@@ -329,4 +342,4 @@ plot(hcluster_results, labels = labels$tumour_specimen_aliquot_id, cex = 0.3,
      main = "Hierarchical Clustering", xlab = "Height", hang = -1)
 #dev.off()
 
-fviz_cluster(kmedoids_results, kmedoids_results$clustering)
+
