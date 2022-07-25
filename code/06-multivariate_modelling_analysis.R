@@ -381,36 +381,3 @@ df_hier_summary <-
   group_by(hier_clustering) %>%
   do(the_summary = summary(.))
 
-# Obtaining p-values for variables for ensemble clusters
-predictors_clustering <- colnames(variables_with_clustering_labelled[1:17])
-ensemble_significance <- lapply(predictors_clustering,
-                                logistic_regression, variables_with_clustering_labelled,
-                                "final_cluster_labels")
-
-## Extracting p-values and coefficients
-results_ensemble <- map_df(ensemble_significance, tidy) # Extracting results directly from the model, not the summary
-
-# Obtaining p-values for variables for k-medoids clusters
-kmedoids_significance <- lapply(predictors_clustering,
-                                logistic_regression, variables_with_clustering_labelled,
-                                "kmedoids_clustering")
-
-## Extracting p-values and coefficients
-results_kmedoids <- map_df(kmedoids_significance, tidy) # Extracting results directly from the model, not the summary
-
-# Obtaining p-values for variables for hierarchical clusters
-hier_significance <- lapply(predictors_clustering,
-                                logistic_regression, variables_with_clustering_labelled,
-                                "hier_clustering")
-
-## Extracting p-values and coefficients
-results_hier <- map_df(hier_significance, tidy) # Extracting results directly from the model, not the summary
-
-# Obtaining p-values for variables for kproto clusters
-kproto_significance <- lapply(predictors_clustering,
-                                logistic_regression, variables_with_clustering_labelled,
-                                "kproto_clustering")
-
-## Extracting p-values and coefficients
-results_kproto <- map_df(kproto_significance, tidy) # Extracting results directly from the model, not the summary
-
