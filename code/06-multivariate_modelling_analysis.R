@@ -12,8 +12,6 @@ library(dbscan)
 library(caret)
 library(dendextend)
 library(Rtsne)
-library(purrr)
-library(broom)
 # Data --------------------------------------------------------------------
 
 modelling_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
@@ -148,8 +146,6 @@ cut_2_clusters <- cutree(hcluster_results, k = 2) # Cutting tree to obtain 2 clu
 ## kmodes clustering - only for categorical variables
 # kmodes_results <- kmodes(categorical_modelling_data, 2, 5)
 
-## Checking the clusters results with adjusted Rand Index
-adjustedRandIndex(kproto_results$cluster, cut_2_clusters)
 
 # Combining clustering results into a dataframe to see their cluster labels from each algorithm
 # kproto_results$cluster
@@ -212,11 +208,6 @@ variables_with_clustering_labelled$kmedoids_clustering <- factor(ifelse(variable
 variables_with_clustering_labelled$hier_clustering <- factor(ifelse(variables_with_clustering$hier_clustering == 2,
                                                                  "Resistant", "Sensitive"))
 
-# Checkpoint saving dataframe after clustering
-# variables_with_clustering_labelled_ids <- variables_with_clustering_labelled
-# rownames(variables_with_clustering_labelled_ids) <- labels$tumour_specimen_aliquot_id
-# write.csv(variables_with_clustering_labelled_ids, here::here("data/multivariate_results/clustering_results_dataframe.csv"))
-
 # ## For DBSCAN
 # variables_with_clustering_labelled$dbscan_clustering <- ifelse(variables_with_clustering$hier_clustering == 1,
 #                                                              "Resistant", "Sensitive")
@@ -230,6 +221,10 @@ variables_with_clustering_labelled$final_cluster_labels <-
                                             'hier_clustering')],
         1, chooseBestModel))
 
+# Checkpoint saving dataframe after clustering
+# variables_with_clustering_labelled_ids <- variables_with_clustering_labelled
+# rownames(variables_with_clustering_labelled_ids) <- labels$tumour_specimen_aliquot_id
+# write.csv(variables_with_clustering_labelled_ids, here::here("data/multivariate_results/clustering_results_dataframe.csv"))
 
 # Multivariate analysis - Visualisation of Results -----------------------
 # Computing accuracy of cluster results compared to ground truth labels
@@ -380,4 +375,5 @@ df_hier_summary <-
   select(-c(final_cluster_labels, kproto_clustering, kmedoids_clustering, Condition)) %>%
   group_by(hier_clustering) %>%
   do(the_summary = summary(.))
+
 
