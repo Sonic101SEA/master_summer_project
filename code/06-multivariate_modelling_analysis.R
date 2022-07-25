@@ -347,3 +347,28 @@ plot(hcluster_results, labels = labels$tumour_specimen_aliquot_id, cex = 0.3,
 #dev.off()
 
 
+# Multivariate Analysis - Visualisation of Results Combined Figure --------
+## Identifying cluster characteristics through summary
+df_ensemble_summary <- 
+variables_with_clustering_labelled %>%
+  select(-c(kproto_clustering, kmedoids_clustering, hier_clustering, Condition)) %>%
+  group_by(final_cluster_labels) %>%
+  do(the_summary = summary(.))
+
+df_kproto_summary <- 
+  variables_with_clustering_labelled %>%
+  select(-c(final_cluster_labels, kmedoids_clustering, hier_clustering, Condition)) %>%
+  group_by(kproto_clustering) %>%
+  do(the_summary = summary(.))
+
+df_kmedoids_summary <-
+  variables_with_clustering_labelled %>%
+  select(-c(final_cluster_labels, kproto_clustering, hier_clustering, Condition)) %>%
+  group_by(kmedoids_clustering) %>%
+  do(the_summary = summary(.))
+
+df_hier_summary <-
+  variables_with_clustering_labelled %>%
+  select(-c(final_cluster_labels, kproto_clustering, kmedoids_clustering, Condition)) %>%
+  group_by(hier_clustering) %>%
+  do(the_summary = summary(.))
