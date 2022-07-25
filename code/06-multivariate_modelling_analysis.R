@@ -12,6 +12,8 @@ library(dbscan)
 library(caret)
 library(dendextend)
 library(Rtsne)
+library(purrr)
+library(broom)
 # Data --------------------------------------------------------------------
 
 modelling_data <- read.csv(here::here("data/final_dataframe.csv"), row.names = 1)
@@ -50,6 +52,12 @@ chooseBestModel <- function(x) {
   sortedOutcomes <- sort(tabulatedOutcomes, decreasing=TRUE)
   mostCommonLabel <- names(sortedOutcomes)[1]
   mostCommonLabel
+}
+
+## Identifying significance of each variable to the clustered data
+logistic_regression_final_labels <- function(variable, dataset, outcome){
+  # To conduct logistic regressions based on the variable names given to it for final_modelling_data
+  model <- glm(reformulate(variable, outcome), data = dataset, family = binomial(link = logit))
 }
 
 draw_confusion_matrix <- function(cm, title_cm = "") {
@@ -193,16 +201,16 @@ summary(hier_glm)
 variables_with_clustering_labelled <- variables_with_clustering
 
 ## For kproto
-variables_with_clustering_labelled$kproto_clustering <- ifelse(variables_with_clustering$kproto_clustering == 2,
-                                                      "Resistant", "Sensitive")
+variables_with_clustering_labelled$kproto_clustering <- factor(ifelse(variables_with_clustering$kproto_clustering == 2,
+                                                      "Resistant", "Sensitive"))
 
 ## For kmedoids
-variables_with_clustering_labelled$kmedoids_clustering <- ifelse(variables_with_clustering$kmedoids_clustering == 2,
-                                                               "Resistant", "Sensitive")
+variables_with_clustering_labelled$kmedoids_clustering <- factor(ifelse(variables_with_clustering$kmedoids_clustering == 2,
+                                                               "Resistant", "Sensitive"))
 
 ## For hierarchical clustering
-variables_with_clustering_labelled$hier_clustering <- ifelse(variables_with_clustering$hier_clustering == 2,
-                                                                 "Resistant", "Sensitive")
+variables_with_clustering_labelled$hier_clustering <- factor(ifelse(variables_with_clustering$hier_clustering == 2,
+                                                                 "Resistant", "Sensitive"))
 
 # Checkpoint saving dataframe after clustering
 # variables_with_clustering_labelled_ids <- variables_with_clustering_labelled
@@ -217,10 +225,10 @@ variables_with_clustering_labelled$hier_clustering <- ifelse(variables_with_clus
 variables_with_clustering_labelled$final_cluster_labels <- NA
 
 variables_with_clustering_labelled$final_cluster_labels <-
-  apply(variables_with_clustering_labelled[c('kproto_clustering',
+  factor(apply(variables_with_clustering_labelled[c('kproto_clustering',
                                             'kmedoids_clustering',
                                             'hier_clustering')],
-        1, chooseBestModel)
+        1, chooseBestModel))
 
 
 # Multivariate analysis - Visualisation of Results -----------------------
@@ -348,7 +356,7 @@ plot(hcluster_results, labels = labels$tumour_specimen_aliquot_id, cex = 0.3,
 
 
 # Multivariate Analysis - Visualisation of Results Combined Figure --------
-## Identifying cluster characteristics through summary
+# Identifying cluster characteristics through summary
 df_ensemble_summary <- 
 variables_with_clustering_labelled %>%
   select(-c(kproto_clustering, kmedoids_clustering, hier_clustering, Condition)) %>%
@@ -372,3 +380,37 @@ df_hier_summary <-
   select(-c(final_cluster_labels, kproto_clustering, kmedoids_clustering, Condition)) %>%
   group_by(hier_clustering) %>%
   do(the_summary = summary(.))
+
+# Obtaining p-values for variables for ensemble clusters
+predictors_clustering <- colnames(variables_with_clustering_labelled[1:17])
+ensemble_significance <- lapply(predictors_clustering,
+                                logistic_regression, variables_with_clustering_labelled,
+                                "final_cluster_labels")
+
+## Extracting p-values and coefficients
+results_ensemble <- map_df(ensemble_significance, tidy) # Extracting results directly from the model, not the summary
+
+# Obtaining p-values for variables for k-medoids clusters
+kmedoids_significance <- lapply(predictors_clustering,
+                                logistic_regression, variables_with_clustering_labelled,
+                                "kmedoids_clustering")
+
+## Extracting p-values and coefficients
+results_kmedoids <- map_df(kmedoids_significance, tidy) # Extracting results directly from the model, not the summary
+
+# Obtaining p-values for variables for hierarchical clusters
+hier_significance <- lapply(predictors_clustering,
+                                logistic_regression, variables_with_clustering_labelled,
+                                "hier_clustering")
+
+## Extracting p-values and coefficients
+results_hier <- map_df(hier_significance, tidy) # Extracting results directly from the model, not the summary
+
+# Obtaining p-values for variables for kproto clusters
+kproto_significance <- lapply(predictors_clustering,
+                                logistic_regression, variables_with_clustering_labelled,
+                                "kproto_clustering")
+
+## Extracting p-values and coefficients
+results_kproto <- map_df(kproto_significance, tidy) # Extracting results directly from the model, not the summary
+
