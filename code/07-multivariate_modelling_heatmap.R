@@ -3,6 +3,7 @@
 library(ggplot2)
 library(reshape)
 library(dplyr)
+library(egg)
 # Data --------------------------------------------------------------------
 heatmap_data <- read.csv(here::here("data/multivariate_results/clustering_results_dataframe.csv"), row.names = 1)
 
@@ -24,8 +25,8 @@ sorted_levels_sample_cx14<- levels_sample_cx14[order(levels_sample_cx14$CX14), ]
 sorted_levels_sample_cx14$id <- factor(sorted_levels_sample_cx14$id)
 
 ## Order of data we want
-# sample_order <- as.vector(sorted_levels_sample_Condition$id)
-sample_order <- as.vector(sorted_levels_sample_cx14$id)
+sample_order <- as.vector(sorted_levels_sample_Condition$id)
+# sample_order <- as.vector(sorted_levels_sample_cx14$id)
 
 
 ## For continuous data
@@ -93,31 +94,42 @@ heatmap_data_clustering_melt$X1 <- factor(heatmap_data_clustering_melt$X1, level
 
 
 # Plotting heatmap for continuous  -----------------------------------------
+continuous_heatmap <-
 heatmap_data_scaled_cn_melt %>%
   ggplot(aes(x = X1, y = X2, fill = value)) + 
   geom_tile(width = 0.9, height = 0.9) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank(), axis.title.x = element_blank()) +
+  xlab('Patients') +
   ylab('Continuous predictors') + labs(fill = "Scaled level")
 
 # heatmap(heatmap_data_scaled_cn, scale = "none")
 
 
 # Plotting heatmap for categorical ----------------------------------------
-
+categorical_heatmap <-
 heatmap_data_categorical_all %>%
   ggplot(aes(x = X1, y = X2, fill = value)) + 
   geom_tile(width = 0.9, height = 0.9) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank(), axis.title.x = element_blank()) +
   ylab('Categorical predictors') + labs(fill = "Attributes")
 
 # Plotting heatmap for clustering results ---------------------------------
+clustering_results_heatmap <- 
 heatmap_data_clustering_melt %>%
   ggplot(aes(x = X1, y = X2, fill = value)) +
   geom_tile(width = 0.9, height = 0.9) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank(), axis.title.x = element_blank()) +
   ylab('Clustering Algorithm') + labs(fill = "Outcome") +
-  scale_y_discrete(labels = c("Actual", "Ensemble", "Hierarchical", "K-Medoids", "K-prototype"))
+  scale_y_discrete(labels = c("Actual", "Ensemble", "Hierarchical", "K-Medoids", "K-prototype")) 
 
 # Plotting combined heatmap -----------------------------------------------
 
+combined_heatmap <-
+ggarrange(clustering_results_heatmap, categorical_heatmap, continuous_heatmap)
 
+ggsave(here::here("graphs/analysis/heatmap_predictors_orderedBy_condition.pdf"), combined_heatmap, height = 9, width = 16)
+
+       
