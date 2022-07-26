@@ -25,8 +25,8 @@ sorted_levels_sample_cx14<- levels_sample_cx14[order(levels_sample_cx14$CX14), ]
 sorted_levels_sample_cx14$id <- factor(sorted_levels_sample_cx14$id)
 
 ## Order of data we want
-sample_order <- as.vector(sorted_levels_sample_Condition$id)
-# sample_order <- as.vector(sorted_levels_sample_cx14$id)
+# sample_order <- as.vector(sorted_levels_sample_Condition$id)
+sample_order <- as.vector(sorted_levels_sample_cx14$id)
 
 
 ## For continuous data
@@ -100,6 +100,7 @@ heatmap_data_scaled_cn_melt %>%
   geom_tile(width = 0.9, height = 0.9) +
   theme(axis.text.x = element_blank(), 
         axis.ticks.x = element_blank(), axis.title.x = element_blank()) +
+  scale_fill_gradient(low = "white", high = "red") +
   xlab('Patients') +
   ylab('Continuous predictors') + labs(fill = "Scaled level")
 
@@ -107,6 +108,7 @@ heatmap_data_scaled_cn_melt %>%
 
 
 # Plotting heatmap for categorical ----------------------------------------
+
 categorical_heatmap <-
 heatmap_data_categorical_all %>%
   ggplot(aes(x = X1, y = X2, fill = value)) + 
@@ -130,6 +132,6 @@ heatmap_data_clustering_melt %>%
 combined_heatmap <-
 ggarrange(clustering_results_heatmap, categorical_heatmap, continuous_heatmap)
 
-ggsave(here::here("graphs/analysis/heatmap_predictors_orderedBy_condition.pdf"), combined_heatmap, height = 9, width = 16)
+# ggsave(here::here("graphs/analysis/heatmap_predictors_orderedBy_cx14.pdf"), combined_heatmap, height = 9, width = 16)
 
        
