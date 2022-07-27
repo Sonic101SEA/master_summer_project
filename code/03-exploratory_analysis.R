@@ -102,7 +102,7 @@ CN_non_stratified_plot_same_scale <-
                                                 "CX16", "CX17"))) %>%
   ggplot(aes(x = reorder(name_reorder, value, median), y = value)) + # Reordering by median values
   geom_boxplot() +
-  labs(title = "Copy number signature activity ordered by mean values", 
+  labs(title = "Copy number signature activity ordered by median values", 
        x = "", y = "Signature activity", colour = "Copy Number")
 
 ggsave(here::here("graphs/exploratory/cn_activity_non_stratified_distribution_same_scale.pdf"), CN_non_stratified_plot_same_scale)
