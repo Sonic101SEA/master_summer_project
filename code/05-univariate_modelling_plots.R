@@ -9,12 +9,11 @@ library(ggpubr)
 # Data --------------------------------------------------------------------
 
 univariate_results <- read.csv(here::here("data/univariate_results/univariate_results.csv"), row.names = 1, stringsAsFactors = FALSE)
-
-# Processing before plotting ----------------------------------------------
-# For 0.05
 ## Removing Intercept rows
 univariate_results_rm_interecept <- subset(univariate_results, subset = univariate_results$term != "(Intercept)")
 
+# Processing before plotting ----------------------------------------------
+# For 0.05
 ## Creating new column for effect direction
 univariate_results_rm_interecept$effect_direction <- "Insignificant"
 
@@ -149,3 +148,40 @@ univariate_significance_plots <- ggarrange(percent5_plot, percent10_plot, percen
                                            ncol = 2, nrow = 2)
 ggsave(here::here("graphs/analysis/univariate_significance_plots_combined.pdf"), 
        univariate_significance_plots, limitsize = TRUE)
+
+
+# Barplot for p-values (Selected) --------------------------------------------
+# Obtaining variables p < 0.25
+significant_variables <- c('CX3', 'CX4', 'CX10', 'CX14', 'age',
+                           'ATM-1', 'NBN1', 'CHEK1-1',
+                           'FAM175A-1', 'PALB21', 'WGD',
+                           'MRE11A-1', 'BRIP11', 'CHEK2-1',
+                           'RAD51C1', 'BARD1-1', 'BRCA21')
+univariate_selected_25 <- subset(univariate_results_rm_interecept,
+                                      subset = univariate_results_rm_interecept$term %in% significant_variables)
+
+# Plotting barplot
+## Ordering predictors
+univariate_selected_25$term <- factor(univariate_selected_25$term, 
+                                      levels = c('age', 'CX3', 'CX4', 'CX10', 'CX14',
+                                                 'WGD', 'ATM-1', 'BARD1-1', 'BRCA21',
+                                                 'BRIP11', 'CHEK1-1', 'CHEK2-1',
+                                                 'FAM175A-1', 'MRE11A-1', 'NBN1',
+                                                 'PALB21', 'RAD51C1'))
+
+barplot_pvalues_25 <-
+univariate_selected_25 %>%
+  ggplot(aes(x = term, y = -log10(p.value))) +
+  geom_bar(stat = "identity") +
+  labs(x = 'Predictors') +
+  scale_x_discrete(labels = c('age', 'CX3', 'CX4', 'CX10', 'CX14', 'WGD', 
+                              'ATM', 'BARD1', 'BRCA2', 'BRIP1', 'CHEK1', 'CHEK2',
+                              'FAM175A', 'MRE11A', 'NBN', 'PALB2', 'RAD51C')) +
+  coord_flip()
+
+ggsave(here::here("graphs/analysis/barplot_pvalues_25_predictors.pdf"), 
+       barplot_pvalues_25, limitsize = TRUE)
+
+  
+
+
