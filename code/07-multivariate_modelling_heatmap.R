@@ -113,13 +113,15 @@ heatmap_data_clustering_melt$X2 <- factor(heatmap_data_clustering_melt$X2,
 
 
 # Plotting heatmap for continuous  -----------------------------------------
+mid <- 0
+
 continuous_heatmap <-
 heatmap_data_scaled_cn_melt %>%
   ggplot(aes(x = X1, y = X2, fill = value)) + 
   geom_tile(width = 0.9, height = 0.9) +
   theme(axis.text.x = element_blank(), 
         axis.ticks.x = element_blank(), axis.title.x = element_blank()) +
-  scale_fill_gradient(low = "white", high = "red") +
+  scale_fill_gradient2(midpoint = mid, low = "blue", mid = "white", high = "red") +
   xlab('Patients') +
   ylab('Continuous predictors') + labs(fill = "Scaled level")
 
