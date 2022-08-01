@@ -24,9 +24,22 @@ rownames(levels_sample_cx14) <- NULL
 sorted_levels_sample_cx14<- levels_sample_cx14[order(levels_sample_cx14$CX14), ]
 sorted_levels_sample_cx14$id <- factor(sorted_levels_sample_cx14$id)
 
+## Sort by therapy outcome and CX14
+levels_sample_Condition_cx14 <- subset(heatmap_data, select = c(Condition, CX14))
+levels_sample_Condition_cx14$id <- rownames(levels_sample_Condition_cx14)
+rownames(levels_sample_Condition_cx14) <- NULL
+
+### Arranging by Condition and increasing values of CX14
+sorted_levels_cx14_condition <-
+  levels_sample_Condition_cx14 %>%
+  arrange(Condition, CX14)
+
+sorted_levels_cx14_condition$id <- factor(sorted_levels_cx14_condition$id)
+
 ## Order of data we want
 # sample_order <- as.vector(sorted_levels_sample_Condition$id)
-sample_order <- as.vector(sorted_levels_sample_cx14$id)
+# sample_order <- as.vector(sorted_levels_sample_cx14$id)
+sample_order <- as.vector(sorted_levels_cx14_condition$id)
 
 
 ## For continuous data
@@ -89,8 +102,14 @@ heatmap_data_clustering <- subset(heatmap_data_scaled,
                                        final_cluster_labels, Condition))
 heatmap_data_clustering_melt <- melt(as.matrix(heatmap_data_clustering))
 
-### 
+### Setting sample order
 heatmap_data_clustering_melt$X1 <- factor(heatmap_data_clustering_melt$X1, levels = sample_order)
+
+### Setting clustering algorithms order
+heatmap_data_clustering_melt$X2 <- factor(heatmap_data_clustering_melt$X2,
+                                          levels = c("Condition", "final_cluster_labels",
+                                                     "hier_clustering", "kmedoids_clustering",
+                                                     "kproto_clustering"))
 
 
 # Plotting heatmap for continuous  -----------------------------------------
@@ -125,13 +144,13 @@ heatmap_data_clustering_melt %>%
   theme(axis.text.x = element_blank(), 
         axis.ticks.x = element_blank(), axis.title.x = element_blank()) +
   ylab('Clustering Algorithm') + labs(fill = "Outcome") +
-  scale_y_discrete(labels = c("Actual", "Ensemble", "Hierarchical", "K-Medoids", "K-prototype")) 
+  scale_y_discrete(labels = c("Therapy", "Ensemble", "Hierarchical", "K-Medoids", "K-prototype")) 
 
 # Plotting combined heatmap -----------------------------------------------
 
 combined_heatmap <-
 ggarrange(clustering_results_heatmap, categorical_heatmap, continuous_heatmap)
 
-# ggsave(here::here("graphs/analysis/heatmap_predictors_orderedBy_cx14.pdf"), combined_heatmap, height = 9, width = 16)
+# ggsave(here::here("graphs/analysis/heatmap_predictors_orderedBy_cx14_condition.pdf"), combined_heatmap, height = 9, width = 16)
 
        
