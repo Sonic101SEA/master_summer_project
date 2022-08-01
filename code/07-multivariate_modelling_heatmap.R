@@ -119,9 +119,10 @@ continuous_heatmap <-
 heatmap_data_scaled_cn_melt %>%
   ggplot(aes(x = X1, y = X2, fill = value)) + 
   geom_tile(width = 0.9, height = 0.9) +
-  theme(axis.text.x = element_blank(), 
-        axis.ticks.x = element_blank()) +
+  # theme(axis.text.x = element_blank(), 
+  #       axis.ticks.x = element_blank()) +
   scale_fill_gradient2(midpoint = mid, low = "blue", mid = "white", high = "red") +
+  scale_x_discrete(labels = c(1:38)) +
   xlab('Patients') +
   ylab('Continuous predictors') + labs(fill = "Scaled level")
 
@@ -153,6 +154,6 @@ heatmap_data_clustering_melt %>%
 combined_heatmap <-
 ggarrange(clustering_results_heatmap, categorical_heatmap, continuous_heatmap)
 
-# ggsave(here::here("graphs/analysis/heatmap_predictors_orderedBy_cx14_condition.pdf"), combined_heatmap, height = 9, width = 16)
+# ggsave(here::here("graphs/analysis/heatmap_predictors_orderedBy_cx14_condition_with_patient_numbering.pdf"), combined_heatmap, height = 9, width = 16)
 
        
