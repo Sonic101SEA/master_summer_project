@@ -4,6 +4,7 @@ library(ggplot2)
 library(reshape)
 library(dplyr)
 library(egg)
+library(viridis)
 # Data --------------------------------------------------------------------
 heatmap_data <- read.csv(here::here("data/multivariate_results/clustering_results_dataframe.csv"), row.names = 1)
 
@@ -137,7 +138,8 @@ heatmap_data_categorical_all %>%
   geom_tile(width = 0.9, height = 0.9) + 
   theme(axis.text.x = element_blank(), 
         axis.ticks.x = element_blank(), axis.title.x = element_blank()) +
-  ylab('Categorical predictors') + labs(fill = "Attributes")
+  ylab('Categorical predictors') + labs(fill = "Attributes") +
+  scale_fill_viridis(discrete = TRUE, option = "A")
 
 # Plotting heatmap for clustering results ---------------------------------
 clustering_results_heatmap <- 
@@ -154,6 +156,6 @@ heatmap_data_clustering_melt %>%
 combined_heatmap <-
 ggarrange(clustering_results_heatmap, categorical_heatmap, continuous_heatmap)
 
-# ggsave(here::here("graphs/analysis/heatmap_predictors_orderedBy_cx14_condition_with_patient_numbering.pdf"), combined_heatmap, height = 9, width = 16)
+# ggsave(here::here("graphs/analysis/heatmap_predictors_orderedBy_cx14_condition_with_patient_numbering_colblind.pdf"), combined_heatmap, height = 9, width = 16)
 
        
