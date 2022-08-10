@@ -78,15 +78,30 @@ ggsave(here::here("graphs/exploratory/plat_outcome_distribution.pdf"), plat_outc
 
 ## Age distribution
 
+analysis_data_na_removed_age_grouped <-
   analysis_data_na_removed %>%
-  ggplot(aes(x = age)) +
-  geom_boxplot(width = 0.1) +
-  xlim(25, 100) +
-  coord_flip()
+  mutate(Age_class = cut(age, breaks = seq(40, 85, by = 5)))
 
-summary(analysis_data_na_removed$age)
-hist(analysis_data_na_removed$age, breaks = 10)
-plot(density(analysis_data_na_removed$age))
+# analysis_data_na_removed %>%
+#   ggplot(aes(x = age)) +
+#   geom_boxplot(width = 0.01) +
+#   xlim(25, 100) +
+#   labs(x = "Age")
+# 
+# summary(analysis_data_na_removed$age)
+# hist(analysis_data_na_removed$age, breaks = 10)
+# plot(density(analysis_data_na_removed$age))
+
+age_labels <- c("41-45", "46-50", '51-55', '56-60', '61-65', '66-70', '71-75', '76-80', '80 and above')
+
+age_distribution <-
+analysis_data_na_removed_age_grouped %>%
+  ggplot(aes(x = Age_class)) +
+  geom_bar() +
+  scale_x_discrete(labels = age_labels) +
+  labs(x = "Age Group", y = "No. of Patients")
+
+ggsave(here::here("graphs/exploratory/age_distribution.pdf"), age_distribution)
 
 ## CN
 
