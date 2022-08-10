@@ -102,8 +102,7 @@ CN_non_stratified_plot_same_scale <-
                                                 "CX16", "CX17"))) %>%
   ggplot(aes(x = reorder(name_reorder, value, median), y = value)) + # Reordering by median values
   geom_boxplot() +
-  labs(title = "Copy number signature activity ordered by median values", 
-       x = "", y = "Signature activity", colour = "Copy Number")
+  labs(x = "", y = "Signature activity", colour = "Copy Number")
 
 ggsave(here::here("graphs/exploratory/cn_activity_non_stratified_distribution_same_scale.pdf"), CN_non_stratified_plot_same_scale)
 
@@ -120,8 +119,7 @@ CN_non_stratified_plot <-
                                        "CX11", "CX12", "CX13", "CX14", "CX15",
                                        "CX16", "CX17")), scales = "free") +
   scale_x_discrete(labels = NULL, breaks = NULL) +
-  labs(title = "Boxplots of copy number signature activity", 
-       x = "", y = "Signature activity")
+  labs(x = "", y = "Signature activity")
 
 #### Output of plot
 ggsave(here::here("graphs/exploratory/cn_activity_non_stratified_distribution.pdf"), CN_non_stratified_plot)
@@ -277,7 +275,7 @@ mutations_genes_snv_plot_non_strat <-
   geom_bar(position = position_dodge(preserve = "single")) +
   facet_wrap(~name, scales = "free") +
   scale_x_discrete(labels = c("No", "Yes")) +
-  labs(title = "Distribution of occurrence of mutations in genes of interest from SNV data",
+  labs(title = "Distribution of occurrence of mutations in genes of interest from SNV and Indel data",
        x = "Presence of mutation", y = "No. of patients")
 
 #### Output plot
