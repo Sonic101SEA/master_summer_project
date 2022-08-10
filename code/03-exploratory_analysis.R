@@ -76,17 +76,17 @@ plat_outcome_plot <-
 
 ggsave(here::here("graphs/exploratory/plat_outcome_distribution.pdf"), plat_outcome_plot)
 
-# ## Age distribution
-# 
-#   analysis_data_na_removed %>%
-#   ggplot(aes(x = age)) +
-#   geom_boxplot(width = 0.1) +
-#   xlim(25, 100) +
-#   coord_flip()
-# 
-# summary(analysis_data_na_removed$age)
-# hist(analysis_data_na_removed$age, breaks = 10)
-# plot(density(analysis_data_na_removed$age))
+## Age distribution
+
+  analysis_data_na_removed %>%
+  ggplot(aes(x = age)) +
+  geom_boxplot(width = 0.1) +
+  xlim(25, 100) +
+  coord_flip()
+
+summary(analysis_data_na_removed$age)
+hist(analysis_data_na_removed$age, breaks = 10)
+plot(density(analysis_data_na_removed$age))
 
 ## CN
 
