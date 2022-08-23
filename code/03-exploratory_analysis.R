@@ -191,7 +191,7 @@ wgd_plot_non_strat <-
   analysis_data_na_removed %>%
   count(WGD) %>%
   ggplot(aes(x = WGD, y = n)) + 
-  geom_bar(position = "dodge", stat = "identity") + 
+  geom_bar(position = "dodge", stat = "identity", width = 0.5) + 
   geom_text(aes(label=n), position = position_dodge(width = 1), vjust = -1.0) +
   theme_classic() + 
   scale_x_discrete(labels = c("No", "Yes")) +
